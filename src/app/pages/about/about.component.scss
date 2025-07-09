@@ -353,3 +353,14 @@
     align-items: center;
   }
 }
+
+.tech-item ul li a {
+  color: #d32f2f;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.tech-item ul li a:hover {
+  color: #1976d2;
+  text-decoration: underline;
+}
