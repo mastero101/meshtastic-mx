@@ -1,1 +1,82 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
+// Variables de colores mexicanos
+:root {
+  --mexican-green: #006847;
+  --mexican-red: #CE1126;
+  --mexican-white: #FFFFFF;
+  --dark-green: #004d35;
+  --dark-red: #a50e1f;
+  --light-green: #e8f5e8;
+  --light-red: #ffe8e8;
+  --gray-dark: #2c3e50;
+  --gray-light: #ecf0f1;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.main-content {
+  min-height: calc(100vh - 200px);
+}
+
+// Utility classes
+.text-center {
+  text-align: center;
+}
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+// Smooth transitions
+* {
+  transition: all 0.3s ease;
+}
+
+// Focus styles for accessibility
+a:focus,
+button:focus {
+  outline: 2px solid var(--mexican-green);
+  outline-offset: 2px;
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--mexican-green);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dark-green);
+}

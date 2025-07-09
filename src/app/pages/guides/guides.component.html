@@ -1,0 +1,45 @@
+<div class="guides-section-bg">
+  <div class="guides-list" #guidesList>
+    <h2>Guías para nuevos usuarios</h2>
+    <p class="guides-subtitle">Aprende a usar Meshtastic paso a paso. Selecciona una guía para comenzar:</p>
+    <div class="guides-grid">
+      <a class="guide-card" routerLink="que-es-meshtastic" routerLinkActive="active">
+        <div class="guide-icon">❓</div>
+        <div class="guide-info">
+          <h3>¿Qué es Meshtastic?</h3>
+          <p>Descubre la tecnología y sus aplicaciones.</p>
+        </div>
+      </a>
+      <a class="guide-card" routerLink="comprar-nodo" routerLinkActive="active">
+        <div class="guide-icon">🛒</div>
+        <div class="guide-info">
+          <h3>¿Cómo comprar o armar tu primer nodo?</h3>
+          <p>Guía para adquirir o construir tu propio nodo.</p>
+        </div>
+      </a>
+      <a class="guide-card" routerLink="primeros-pasos" routerLinkActive="active">
+        <div class="guide-icon">🚀</div>
+        <div class="guide-info">
+          <h3>Primeros pasos</h3>
+          <p>Configura y conecta tu nodo fácilmente.</p>
+        </div>
+      </a>
+      <a class="guide-card" routerLink="apps" routerLinkActive="active">
+        <div class="guide-icon">📱</div>
+        <div class="guide-info">
+          <h3>Aplicaciones móviles</h3>
+          <p>Conoce las apps y cómo usarlas con Meshtastic.</p>
+        </div>
+      </a>
+      <a class="guide-card" routerLink="/community" routerLinkActive="active">
+        <div class="guide-icon">🤝</div>
+        <div class="guide-info">
+          <h3>Unirse a la comunidad</h3>
+          <p>Recursos, soporte y redes sociales.</p>
+        </div>
+      </a>
+    </div>
+  </div>
+  <hr />
+  <router-outlet #guidesOutlet></router-outlet>
+</div>

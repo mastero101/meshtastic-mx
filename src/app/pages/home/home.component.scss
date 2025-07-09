@@ -1,0 +1,360 @@
+.home {
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+// Hero Section
+.hero {
+  background: linear-gradient(135deg, var(--mexican-green) 0%, var(--mexican-red) 100%);
+  color: white;
+  padding: 4rem 0;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .hero-subtitle {
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+  }
+
+  .hero-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    opacity: 0.8;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+}
+
+// Buttons
+.btn {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+
+  &.btn-primary {
+    background: var(--mexican-green);
+    color: white;
+
+    &:hover {
+      background: var(--dark-green);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 108, 71, 0.3);
+    }
+  }
+
+  &.btn-secondary {
+    background: transparent;
+    color: white;
+    border-color: white;
+
+    &:hover {
+      background: white;
+      color: var(--mexican-green);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.btn-mexico {
+  background: linear-gradient(90deg, #388e3c 60%, #c62828 100%);
+  color: #fff !important;
+  font-weight: 700;
+  border-radius: 2em;
+  padding: 0.7em 2.1em;
+  font-size: 1.13em;
+  box-shadow: 0 2px 12px 0 #388e3c22;
+  border: none;
+  outline: none;
+  transition: background 0.18s, box-shadow 0.18s, transform 0.18s;
+  text-shadow: 0 1px 4px #2222;
+}
+.btn-mexico:hover, .btn-mexico:focus {
+  background: linear-gradient(90deg, #c62828 60%, #388e3c 100%);
+  color: #fff !important;
+  transform: scale(1.06);
+  box-shadow: 0 4px 16px 0 #c6282822;
+}
+
+// Mesh Network Visual
+.mesh-network-visual {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  overflow: hidden;
+
+  .node {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: var(--mexican-green);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(0, 108, 71, 0.5);
+    animation: pulse 2s infinite;
+
+    &.node-1 { top: 20%; left: 20%; }
+    &.node-2 { top: 30%; right: 25%; }
+    &.node-3 { bottom: 30%; left: 30%; }
+    &.node-4 { bottom: 20%; right: 20%; }
+    &.node-5 { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+  }
+
+  .connection {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, var(--mexican-green), var(--mexican-red));
+    animation: flow 3s infinite;
+
+    &.connection-1 {
+      top: 25%; left: 25%; width: 30%; transform: rotate(15deg);
+    }
+    &.connection-2 {
+      top: 35%; right: 30%; width: 25%; transform: rotate(-20deg);
+    }
+    &.connection-3 {
+      bottom: 25%; left: 35%; width: 35%; transform: rotate(45deg);
+    }
+    &.connection-4 {
+      bottom: 35%; right: 25%; width: 30%; transform: rotate(-30deg);
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+}
+
+@keyframes flow {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+// Features Section
+.features {
+  padding: 5rem 0;
+  background: var(--light-green);
+
+  h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--gray-dark);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    border-top: 4px solid var(--mexican-green);
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--gray-dark);
+    }
+
+    p {
+      color: #7f8c8d;
+      line-height: 1.6;
+    }
+  }
+}
+
+// Community Section
+.community {
+  padding: 5rem 0;
+  background: linear-gradient(135deg, var(--mexican-green) 0%, var(--mexican-red) 100%);
+  color: white;
+
+  .community-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin-bottom: 3rem;
+      opacity: 0.9;
+    }
+  }
+
+  .community-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+
+    .stat {
+      text-align: center;
+
+      .stat-number {
+        display: block;
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--mexican-white);
+      }
+
+      .stat-label {
+        font-size: 1.1rem;
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+// Latest Projects
+.latest-projects {
+  padding: 5rem 0;
+  background: white;
+
+  h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--gray-dark);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .project-card {
+    background: var(--light-green);
+    padding: 2rem;
+    border-radius: 15px;
+    border-left: 4px solid var(--mexican-green);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--gray-dark);
+    }
+
+    p {
+      color: #7f8c8d;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .project-link {
+      color: var(--mexican-green);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: var(--dark-green);
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .hero {
+    padding: 2rem 0;
+
+    .container {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+    }
+
+    .hero-buttons {
+      justify-content: center;
+    }
+  }
+
+  .features h2,
+  .community h2,
+  .latest-projects h2 {
+    font-size: 2rem;
+  }
+
+  .community-stats {
+    gap: 2rem;
+
+    .stat .stat-number {
+      font-size: 2.5rem;
+    }
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+}

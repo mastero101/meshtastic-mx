@@ -1,0 +1,381 @@
+.community-page {
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+// Hero Section
+.hero {
+  background: linear-gradient(135deg, var(--mexican-green) 0%, var(--mexican-red) 100%);
+  color: white;
+  padding: 4rem 0;
+  text-align: center;
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.3rem;
+    opacity: 0.9;
+  }
+}
+
+// Stats Section
+.stats {
+  padding: 3rem 0;
+  background: var(--light-green);
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+  }
+
+  .stat-card {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-top: 4px solid var(--mexican-green);
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--mexican-green);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 1.1rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+// Join Channels Section
+.join-channels {
+  padding: 5rem 0;
+  background: white;
+
+  h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: var(--gray-dark);
+    margin-bottom: 3rem;
+  }
+
+  .channels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .channel-card {
+    text-align: center;
+    padding: 2rem;
+    background: var(--light-green);
+    border-radius: 15px;
+    border-top: 4px solid var(--mexican-green);
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+
+    .channel-icon {
+      font-size: 3rem;
+      color: var(--mexican-green);
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      color: var(--gray-dark);
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+  }
+}
+
+// Buttons
+.btn {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+
+  &.btn-primary {
+    background: var(--mexican-green);
+    color: white;
+
+    &:hover {
+      background: var(--dark-green);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 108, 71, 0.3);
+    }
+  }
+}
+
+// Events Section
+.events {
+  padding: 5rem 0;
+  background: var(--light-red);
+
+  h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: var(--gray-dark);
+    margin-bottom: 3rem;
+  }
+
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  .event-card {
+    display: flex;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--mexican-red);
+
+    .event-date {
+      background: var(--mexican-red);
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+      min-width: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      .day {
+        font-size: 2rem;
+        font-weight: 700;
+        display: block;
+      }
+
+      .month {
+        font-size: 1rem;
+        text-transform: uppercase;
+      }
+    }
+
+    .event-content {
+      padding: 1.5rem;
+      flex: 1;
+
+      h3 {
+        color: var(--gray-dark);
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .event-location {
+        color: var(--mexican-red);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .event-description {
+        color: #555;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
+
+      .event-link {
+        color: var(--mexican-red);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: var(--dark-red);
+        }
+      }
+    }
+  }
+}
+
+// Local Groups Section
+.local-groups {
+  padding: 5rem 0;
+  background: white;
+
+  h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: var(--gray-dark);
+    margin-bottom: 3rem;
+  }
+
+  .groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .group-card {
+    padding: 2rem;
+    background: var(--light-green);
+    border-radius: 15px;
+    border-top: 4px solid var(--mexican-green);
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+    }
+
+    h3 {
+      color: var(--mexican-green);
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .group-stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+
+      span {
+        background: rgba(0, 108, 71, 0.1);
+        color: var(--mexican-green);
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+    }
+
+    .group-link {
+      color: var(--mexican-green);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: var(--dark-green);
+      }
+    }
+  }
+}
+
+// Resources Section
+.resources {
+  padding: 5rem 0;
+  background: linear-gradient(135deg, var(--mexican-green) 0%, var(--mexican-red) 100%);
+  color: white;
+
+  h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .resource-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      opacity: 0.9;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .resource-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.3s ease;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .hero {
+    padding: 2rem 0;
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+    }
+  }
+
+  .stats .stat-card .stat-number {
+    font-size: 2.5rem;
+  }
+
+  .join-channels h2,
+  .events h2,
+  .local-groups h2,
+  .resources h2 {
+    font-size: 2rem;
+  }
+
+  .event-card {
+    flex-direction: column;
+
+    .event-date {
+      min-width: auto;
+      padding: 1rem;
+    }
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+}

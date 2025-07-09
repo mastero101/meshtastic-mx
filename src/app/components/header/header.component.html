@@ -1,0 +1,25 @@
+<header class="header">
+  <div class="container">
+    <div class="logo">
+      <a routerLink="/">
+        <h1>Meshtastic México</h1>
+      </a>
+    </div>
+    
+    <nav class="nav">
+      <ul class="nav-list">
+        <li><a routerLink="/" routerLinkActive="active">Inicio</a></li>
+        <li><a routerLink="/about" routerLinkActive="active">Acerca de</a></li>
+        <li><a routerLink="/community" routerLinkActive="active">Comunidad</a></li>
+        <li><a routerLink="/guides" routerLinkActive="active">Guías</a></li>
+        <li><a routerLink="/projects" routerLinkActive="active">Proyectos</a></li>
+      </ul>
+    </nav>
+
+    <div class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</header>
