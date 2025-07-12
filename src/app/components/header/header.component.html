@@ -6,17 +6,17 @@
       </a>
     </div>
     
-    <nav class="nav">
+    <nav class="nav" [class.mobile-open]="isMobileMenuOpen">
       <ul class="nav-list">
-        <li><a routerLink="/" routerLinkActive="active">Inicio</a></li>
-        <li><a routerLink="/about" routerLinkActive="active">Acerca de</a></li>
-        <li><a routerLink="/community" routerLinkActive="active">Comunidad</a></li>
-        <li><a routerLink="/guides" routerLinkActive="active">Guías</a></li>
-        <li><a routerLink="/projects" routerLinkActive="active">Proyectos</a></li>
+        <li><a routerLink="/" routerLinkActive="active" (click)="closeMobileMenu()">Inicio</a></li>
+        <li><a routerLink="/about" routerLinkActive="active" (click)="closeMobileMenu()">Acerca de</a></li>
+        <li><a routerLink="/community" routerLinkActive="active" (click)="closeMobileMenu()">Comunidad</a></li>
+        <li><a routerLink="/guides" routerLinkActive="active" (click)="closeMobileMenu()">Guías</a></li>
+        <li><a routerLink="/projects" routerLinkActive="active" (click)="closeMobileMenu()">Proyectos</a></li>
       </ul>
     </nav>
 
-    <div class="mobile-menu-toggle" (click)="toggleMobileMenu()">
+    <div class="mobile-menu-toggle" [class.active]="isMobileMenuOpen" (click)="toggleMobileMenu()">
       <span></span>
       <span></span>
       <span></span>

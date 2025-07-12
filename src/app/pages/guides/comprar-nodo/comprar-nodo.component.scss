@@ -150,6 +150,40 @@ p {
   margin: 2rem 0 1.2rem 0;
   text-align: left;
 }
+
+.frequency-note {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  border: 2px solid #ffc107;
+  border-radius: 0.8rem;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  box-shadow: 0 2px 8px 0 #ffc10722;
+  animation: warningPulse 2s infinite alternate;
+}
+
+.note-icon {
+  font-size: 1.3em;
+  color: #ff8f00;
+}
+
+.frequency-note strong {
+  color: #d32f2f;
+  font-weight: 700;
+}
+
+.frequency-note {
+  color: #333;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+@keyframes warningPulse {
+  0% { box-shadow: 0 2px 8px 0 #ffc10722; }
+  100% { box-shadow: 0 4px 16px 0 #ffc10744; }
+}
 .guide-models h3 {
   color: #388e3c;
   font-size: 1.13rem;

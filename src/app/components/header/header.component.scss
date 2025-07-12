@@ -71,6 +71,7 @@
   flex-direction: column;
   cursor: pointer;
   gap: 4px;
+  z-index: 1001;
 
   span {
     width: 25px;
@@ -79,11 +80,84 @@
     border-radius: 2px;
     transition: all 0.3s ease;
   }
+
+  &.active {
+    span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    span:nth-child(2) {
+      opacity: 0;
+    }
+    
+    span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -6px);
+    }
+  }
 }
 
 @media (max-width: 768px) {
   .nav {
-    display: none;
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(30, 30, 30, 0.55);
+    backdrop-filter: blur(6px) saturate(1.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: left 0.3s cubic-bezier(.7,.2,.2,1);
+    z-index: 1000;
+
+    &.mobile-open {
+      left: 0;
+    }
+
+    .nav-list {
+      background: rgba(255,255,255,0.13);
+      box-shadow: 0 8px 32px 0 rgba(0,0,0,0.18);
+      border-radius: 1.3rem;
+      padding: 1.2rem 0.7rem;
+      min-width: 70vw;
+      max-width: 90vw;
+      max-height: 70vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.1rem;
+      margin: 0;
+      border: 1.5px solid rgba(255,255,255,0.18);
+    }
+    .nav-list li {
+      width: 100%;
+    }
+    .nav-list li a {
+      width: 100%;
+      font-size: 1.08rem;
+      padding: 0.7rem 0.5rem;
+      border-radius: 0.8rem;
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 1px 6px 0 rgba(56,142,60,0.08);
+      margin: 0 auto;
+      transition: background 0.18s, color 0.18s, transform 0.18s;
+      text-align: center;
+      letter-spacing: 0.2px;
+      text-shadow: 0 1px 4px #2222;
+      border: 1.2px solid rgba(255,255,255,0.13);
+      display: block;
+    }
+    .nav-list li a:hover, .nav-list li a.active {
+      background: linear-gradient(90deg, #388e3c 60%, #c62828 100%);
+      color: #fff;
+      transform: scale(1.04);
+      box-shadow: 0 4px 16px 0 #c6282822;
+      border: 1.2px solid #fff9;
+    }
   }
 
   .mobile-menu-toggle {
