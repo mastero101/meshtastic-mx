@@ -152,32 +152,49 @@ p {
 }
 
 .frequency-note {
-  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-  border: 2px solid #ffc107;
-  border-radius: 0.8rem;
-  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #fffbe7 0%, #fff3cd 100%);
+  border: 2px solid #ffb300;
+  border-radius: 1rem;
+  padding: 1.1rem 1.3rem;
   margin-bottom: 1.5rem;
+  box-shadow: 0 2px 12px 0 #ffc10733;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.note-header {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  box-shadow: 0 2px 8px 0 #ffc10722;
-  animation: warningPulse 2s infinite alternate;
+  gap: 0.6rem;
+  margin-bottom: 0.2rem;
 }
 
 .note-icon {
-  font-size: 1.3em;
+  font-size: 1.5em;
   color: #ff8f00;
+  filter: drop-shadow(0 1px 2px #ffb30055);
+}
+
+.note-title {
+  color: #d32f2f;
+  font-weight: 800;
+  font-size: 1.08em;
+  letter-spacing: 0.5px;
+}
+
+.note-body {
+  color: #333;
+  font-size: 1.04em;
+  line-height: 1.6;
+  font-weight: 500;
 }
 
 .frequency-note strong {
-  color: #d32f2f;
+  color: #c62828;
   font-weight: 700;
-}
-
-.frequency-note {
-  color: #333;
-  font-size: 1.05rem;
-  line-height: 1.5;
 }
 
 @keyframes warningPulse {
@@ -271,6 +288,15 @@ p {
   100% { box-shadow: 0 0 16px 4px #c6282822; }
 }
 
+.only-mobile {
+  display: none;
+}
+@media (max-width: 600px) {
+  .only-mobile {
+    display: inline;
+  }
+}
+
 @media (max-width: 900px) {
   .glass-card {
     padding: 1.1rem 0.7rem 1rem 0.7rem;
@@ -283,5 +309,15 @@ p {
   .models-list li {
     padding: 0.7rem 0.7rem;
     font-size: 0.97rem;
+  }
+  .frequency-note {
+    padding: 0.8rem 0.7rem;
+    font-size: 0.98rem;
+  }
+  .note-header {
+    font-size: 1em;
+  }
+  .note-body {
+    font-size: 0.97em;
   }
 }
