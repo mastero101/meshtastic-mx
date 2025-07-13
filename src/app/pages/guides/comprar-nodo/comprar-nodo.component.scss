@@ -321,3 +321,19 @@ p {
     font-size: 0.97em;
   }
 }
+
+.model-img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  border-radius: 0.4em;
+  margin-right: 0.8em;
+  box-shadow: 0 1px 4px #0001;
+  background: #fff;
+  border: 1px solid #eee;
+}
+.models-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
