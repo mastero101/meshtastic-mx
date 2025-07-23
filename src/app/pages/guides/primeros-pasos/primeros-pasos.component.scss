@@ -243,4 +243,17 @@ ol {
     font-size: 0.97em;
     padding: 0.4em 1em;
   }
+  
+  .guide-warning {
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 0.95em;
+    padding: 0.8em 1em;
+    gap: 0.4em;
+  }
+  
+  .warning-icon {
+    font-size: 1.3em;
+    margin-right: 0;
+  }
 }
