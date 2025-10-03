@@ -20,16 +20,49 @@
 .logo {
   a {
     text-decoration: none;
-    color: white;
-    
+    color: #333;
+    font-weight: bold;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+
     h1 {
       margin: 0;
       font-size: 1.5rem;
-      font-weight: 700;
-      background: linear-gradient(45deg, #fff, #f0f0f0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #5fe81a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .mexico-flag {
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 2px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+          transform: scale(1.05);
+          box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+      }
+
+      @media (max-width: 768px) {
+        font-size: 1.3rem;
+
+        .mexico-flag {
+          width: 24px;
+          height: 16px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        font-size: 1.1rem;
+
+        .mexico-flag {
+          width: 20px;
+          height: 14px;
+        }
+      }
     }
   }
 }
