@@ -12,11 +12,11 @@
     <div class="container">
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-number">150+</div>
+          <div class="stat-number">291+</div>
           <div class="stat-label">Miembros</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">8</div>
+          <div class="stat-number">16</div>
           <div class="stat-label">Ciudades</div>
         </div>
         <div class="stat-card">
@@ -24,7 +24,7 @@
           <div class="stat-label">Proyectos</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">12</div>
+          <div class="stat-number">1</div>
           <div class="stat-label">Eventos</div>
         </div>
       </div>
@@ -97,49 +97,131 @@
     <div class="container">
       <h2>Próximos Eventos</h2>
       <div class="events-grid">
-        <div class="event-card">
+        <div class="event-card" *ngFor="let event of events" (click)="openModal(event)">
           <div class="event-date">
-            <span class="day">15</span>
-            <span class="month">Dic</span>
+            <span class="day">{{event.date.getDate()}}</span>
+            <span class="month">{{getMonthName(event.date)}}</span>
           </div>
           <div class="event-content">
-            <h3>Taller de Construcción de Nodos</h3>
-            <p class="event-location">📍 Ciudad de México</p>
+            <h3>{{event.title}}</h3>
+            <p class="event-location">📍 {{event.location}}</p>
             <p class="event-description">
-              Aprende a construir tu propio nodo Meshtastic desde cero. 
-              Incluye todos los materiales necesarios.
+              {{event.description}}
             </p>
-            <a href="#" class="event-link">Más información →</a>
+            <a href="javascript:void(0)" class="event-link">Más información →</a>
           </div>
         </div>
-        <div class="event-card">
-          <div class="event-date">
-            <span class="day">22</span>
-            <span class="month">Dic</span>
+      </div>
+
+      <!-- Modal -->
+      <div class="modal-overlay" [class.active]="showModal" (click)="closeModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+          <button class="close-button" (click)="closeModal()">&times;</button>
+          
+          <div class="modal-header" *ngIf="selectedEvent">
+            <h2>{{selectedEvent.title}}</h2>
+            <div class="event-meta">
+              <span class="event-date">
+                <i class="fas fa-calendar"></i>
+                {{getFormattedDate(selectedEvent.date)}}
+              </span>
+              <span class="event-location">
+                <i class="fas fa-map-marker-alt"></i>
+                {{selectedEvent.location}}
+              </span>
+            </div>
           </div>
-          <div class="event-content">
-            <h3>Meetup Virtual: Aplicaciones Prácticas</h3>
-            <p class="event-location">📍 En línea</p>
-            <p class="event-description">
-              Presentación de casos de uso reales y aplicaciones prácticas 
-              de Meshtastic en México.
-            </p>
-            <a href="#" class="event-link">Más información →</a>
-          </div>
-        </div>
-        <div class="event-card">
-          <div class="event-date">
-            <span class="day">10</span>
-            <span class="month">Ene</span>
-          </div>
-          <div class="event-content">
-            <h3>Hackathon Meshtastic</h3>
-            <p class="event-location">📍 Guadalajara</p>
-            <p class="event-description">
-              Evento de 48 horas para desarrollar nuevas aplicaciones 
-              y soluciones usando Meshtastic.
-            </p>
-            <a href="#" class="event-link">Más información →</a>
+
+          <div class="modal-body" *ngIf="selectedEvent">
+            <div class="event-details" *ngIf="!showRegistrationForm && !registrationSuccess">
+              <h3>Detalles del Evento</h3>
+              <p>{{selectedEvent.details}}</p>
+              
+              <div class="event-cta">
+                <button class="btn btn-primary" (click)="showRegistration()">Registrarse</button>
+                <button class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+              </div>
+            </div>
+
+            <!-- Registration Form -->
+            <div class="registration-form" *ngIf="showRegistrationForm && !registrationSuccess">
+              <h3>Registro para {{selectedEvent.title}}</h3>
+              
+              <form #regForm="ngForm" (ngSubmit)="$event.preventDefault(); onSubmit()">
+                <div class="form-group" [class.error]="formErrors.name">
+                  <label for="name">Nombre completo *</label>
+                  <input 
+                    type="text" 
+                    id="name" 
+                    [(ngModel)]="registrationForm.name" 
+                    name="name"
+                    placeholder="Tu nombre completo"
+                    (blur)="validateForm()">
+                  <div class="error-message" *ngIf="formErrors.name">{{formErrors.name}}</div>
+                </div>
+                
+                <div class="form-group" [class.error]="formErrors.email">
+                  <label for="email">Correo electrónico *</label>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    [(ngModel)]="registrationForm.email" 
+                    name="email"
+                    placeholder="tu@email.com"
+                    (blur)="validateForm()">
+                  <div class="error-message" *ngIf="formErrors.email">{{formErrors.email}}</div>
+                </div>
+                
+                <div class="form-group" [class.error]="formErrors.phone">
+                  <label for="phone">Teléfono *</label>
+                  <input 
+                    type="tel" 
+                    id="phone" 
+                    [(ngModel)]="registrationForm.phone" 
+                    name="phone"
+                    placeholder="55 1234 5678"
+                    (blur)="validateForm()">
+                  <div class="error-message" *ngIf="formErrors.phone">{{formErrors.phone}}</div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="city">Ciudad</label>
+                  <input 
+                    type="text" 
+                    id="city" 
+                    [(ngModel)]="registrationForm.city" 
+                    name="city"
+                    placeholder="¿De qué ciudad nos visitas?">
+                </div>
+                
+                <div class="form-group">
+                  <label for="comments">Comentarios o preguntas</label>
+                  <textarea 
+                    id="comments" 
+                    [(ngModel)]="registrationForm.comments" 
+                    name="comments"
+                    rows="3"
+                    placeholder="¿Tienes alguna pregunta o comentario adicional?"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                  <button type="button" class="btn btn-secondary" (click)="showRegistrationForm = false">Atrás</button>
+                  <button type="submit" class="btn btn-primary" [disabled]="!regForm.valid">Enviar registro</button>
+                </div>
+              </form>
+            </div>
+            
+            <!-- Success Message -->
+            <div class="success-message" *ngIf="registrationSuccess">
+              <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <h3>¡Registro exitoso!</h3>
+              <p>Gracias por registrarte. Te hemos enviado un correo de confirmación.</p>
+              <h3>¡Registro exitoso!</h3>
+              <p>Gracias por registrarte al evento. Te hemos enviado un correo de confirmación con los detalles.</p>
+              <button class="btn btn-primary" (click)="closeModal()">Cerrar</button>
+            </div>
           </div>
         </div>
       </div>
@@ -162,7 +244,7 @@
         </div>
         <div class="group-card">
           <h3>Monterrey</h3>
-          <p>Comunidad creciente en Nuevo León con enfoque en aplicaciones industriales.</p>
+          <p>Comunidad en crecimiento en Nuevo León </p>
           <div class="group-stats">
             <span>30+ miembros</span>
             <span>3 proyectos activos</span>
@@ -170,8 +252,8 @@
           <a href="#" class="group-link">Contactar grupo</a>
         </div>
         <div class="group-card">
-          <h3>Guadalajara</h3>
-          <p>Grupo en Jalisco especializado en desarrollo de software y aplicaciones.</p>
+          <h3>Mexicali</h3>
+          <p>Grupo en Mexicali especializado en despliegue masivo de nodos</p>
           <div class="group-stats">
             <span>25+ miembros</span>
             <span>4 proyectos activos</span>
@@ -179,8 +261,8 @@
           <a href="#" class="group-link">Contactar grupo</a>
         </div>
         <div class="group-card">
-          <h3>Querétaro</h3>
-          <p>Comunidad emergente con interés en aplicaciones agrícolas y rurales.</p>
+          <h3>Península de Yucatán</h3>
+          <p>Comunidad en crecimiento que abarca Yucatán, Campeche y Quintana Roo. Enfocada en conectar estas ciudades</p>
           <div class="group-stats">
             <span>15+ miembros</span>
             <span>2 proyectos activos</span>

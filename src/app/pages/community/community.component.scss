@@ -1,5 +1,6 @@
 .community-page {
   min-height: 100vh;
+  position: relative;
 }
 
 .container {
@@ -214,6 +215,243 @@
         }
       }
     }
+  }
+}
+
+// Form Styles
+.registration-form, .success-message {
+  h3 {
+    color: var(--gray-dark);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+  }
+  
+  p {
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+}
+
+.registration-form {
+  .form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #444;
+      
+      &[required]::after {
+        content: ' *';
+        color: var(--mexican-red);
+      }
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      
+      &:focus {
+        outline: none;
+        border-color: var(--mexican-green);
+        box-shadow: 0 0 0 3px rgba(0, 120, 94, 0.1);
+      }
+      
+      &::placeholder {
+        color: #999;
+      }
+    }
+    
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    &.error {
+      input, textarea {
+        border-color: #e74c3c;
+        
+        &:focus {
+          box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+      }
+      
+      .error-message {
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+      }
+    }
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+    
+    .btn {
+      min-width: 120px;
+      text-align: center;
+    }
+  }
+}
+
+.success-message {
+  text-align: center;
+  padding: 2rem 0;
+  
+  .success-icon {
+    color: var(--mexican-green);
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  h3 {
+    color: var(--mexican-green);
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    color: #555;
+    margin-bottom: 2rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .btn {
+    min-width: 200px;
+  }
+}
+
+// Modal Styles
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+  padding: 2rem;
+  overflow-y: auto;
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: modalFadeIn 0.3s ease-out;
+
+    .close-button {
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #666;
+      transition: color 0.2s;
+      z-index: 10;
+
+      &:hover {
+        color: #333;
+      }
+    }
+  }
+
+  .modal-header {
+    padding: 2.5rem 2.5rem 1.5rem;
+    border-bottom: 1px solid #eee;
+
+    h2 {
+      margin: 0 0 1rem;
+      color: #2c3e50;
+    }
+
+    .event-meta {
+      display: flex;
+      gap: 1.5rem;
+      color: #666;
+      font-size: 0.95rem;
+
+      span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        i {
+          color: var(--mexican-red);
+        }
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 1.5rem 2.5rem 2.5rem;
+
+    .event-details {
+      h3 {
+        color: #2c3e50;
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+      }
+
+      p {
+        color: #555;
+        line-height: 1.7;
+        margin-bottom: 2rem;
+      }
+
+      .event-cta {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+      }
+    }
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
