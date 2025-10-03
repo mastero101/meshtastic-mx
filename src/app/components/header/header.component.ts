@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
@@ -10,6 +10,15 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class HeaderComponent {
   isMobileMenuOpen = false;
+  isLogoHovered = false;
+  isLogoClicked = false;
+
+  @HostListener('document:animationend', ['$event'])
+  onAnimationEnd(event: AnimationEvent) {
+    if ((event.target as HTMLElement).classList.contains('mexico-flag')) {
+      this.isLogoClicked = false;
+    }
+  }
 
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
