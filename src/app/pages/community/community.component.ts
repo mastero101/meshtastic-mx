@@ -24,20 +24,61 @@ export class CommunityComponent {
   showRegistrationForm = false;
   registrationSuccess = false;
   
+  // Mexican states and cities
+  mexicanCities = [
+    'Aguascalientes',
+    'Baja California',
+    'Baja California Sur',
+    'Campeche',
+    'Chiapas',
+    'Chihuahua',
+    'Ciudad de México',
+    'Coahuila',
+    'Colima',
+    'Durango',
+    'Estado de México',
+    'Guanajuato',
+    'Guerrero',
+    'Hidalgo',
+    'Jalisco',
+    'Michoacán',
+    'Morelos',
+    'Nayarit',
+    'Nuevo León',
+    'Oaxaca',
+    'Puebla',
+    'Querétaro',
+    'Quintana Roo',
+    'San Luis Potosí',
+    'Sinaloa',
+    'Sonora',
+    'Tabasco',
+    'Tamaulipas',
+    'Tlaxcala',
+    'Veracruz',
+    'Yucatán',
+    'Zacatecas',
+    'Otra'
+  ];
+
   // Form model
   registrationForm = {
     name: '',
     email: '',
     phone: '',
     city: '',
+    otherCity: '',
+    meshPlate: '',
     comments: ''
   };
-  
+
   // Form validation state
   formErrors = {
     name: '',
     email: '',
-    phone: ''
+    phone: '',
+    city: '',
+    meshPlate: ''
   };
 
   events: Event[] = [
@@ -101,12 +142,16 @@ export class CommunityComponent {
       email: '',
       phone: '',
       city: '',
+      otherCity: '',
+      meshPlate: '',
       comments: ''
     };
     this.formErrors = {
       name: '',
       email: '',
-      phone: ''
+      phone: '',
+      city: '',
+      meshPlate: ''
     };
   }
   
@@ -119,8 +164,16 @@ export class CommunityComponent {
       email: !this.registrationForm.email ? 'El correo electrónico es requerido' : 
             !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.registrationForm.email) ? 'Ingresa un correo válido' : '',
       phone: !this.registrationForm.phone ? 'El teléfono es requerido' : 
-            !/^[0-9\-\+\(\)\s]{10,15}$/.test(this.registrationForm.phone) ? 'Ingresa un teléfono válido' : ''
+            !/^[0-9\-\+\(\)\s]{10,15}$/.test(this.registrationForm.phone) ? 'Ingresa un teléfono válido' : '',
+      city: !this.registrationForm.city ? 'La ciudad es requerida' : '',
+      meshPlate: !this.registrationForm.meshPlate ? 'La placa Meshtastic es requerida' : ''
     };
+    
+    // If "Otra" is selected, require the otherCity field
+    if (this.registrationForm.city === 'Otra' && !this.registrationForm.otherCity) {
+      this.formErrors.city = 'Por favor especifica tu ciudad';
+      isValid = false;
+    }
     
     // Check if there are any errors
     Object.values(this.formErrors).forEach(error => {
@@ -133,9 +186,21 @@ export class CommunityComponent {
   onSubmit(): void {
     console.log('Form submission started');
     if (this.validateForm()) {
-      console.log('Form is valid, submitting...');
-      // Here you would typically send the form data to your backend
-      console.log('Form submitted:', this.registrationForm);
+      // If "Otra" is selected, use the otherCity value
+      const cityToSave = this.registrationForm.city === 'Otra' 
+        ? this.registrationForm.otherCity 
+        : this.registrationForm.city;
+
+      const formData = {
+        ...this.registrationForm,
+        city: cityToSave
+      };
+
+      console.log('Form submitted:', formData);
+      
+      // Here you would typically send formData to your backend
+      // For example:
+      // this.yourService.submitRegistration(formData).subscribe(...);
       
       // Show success message
       this.registrationSuccess = true;
@@ -143,7 +208,7 @@ export class CommunityComponent {
       // Reset the form after a delay
       setTimeout(() => {
         this.closeModal();
-      }, 3000);
+      }, 30000);
     } else {
       console.log('Form validation failed');
     }

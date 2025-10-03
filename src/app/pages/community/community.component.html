@@ -184,14 +184,46 @@
                   <div class="error-message" *ngIf="formErrors.phone">{{formErrors.phone}}</div>
                 </div>
                 
-                <div class="form-group">
-                  <label for="city">Ciudad</label>
-                  <input 
-                    type="text" 
+                <div class="form-group" [class.error]="formErrors.city">
+                  <label for="city">Ciudad *</label>
+                  <select 
                     id="city" 
                     [(ngModel)]="registrationForm.city" 
                     name="city"
-                    placeholder="¿De qué ciudad nos visitas?">
+                    class="form-control"
+                    (change)="validateForm()">
+                    <option value="">Selecciona tu ciudad</option>
+                    <option *ngFor="let city of mexicanCities" [value]="city">{{city}}</option>
+                  </select>
+                  <div class="error-message" *ngIf="formErrors.city">{{formErrors.city}}</div>
+                </div>
+
+                <!-- Additional city field when 'Otra' is selected -->
+                <div class="form-group" *ngIf="registrationForm.city === 'Otra'" [class.error]="formErrors.city && !registrationForm.otherCity">
+                  <label for="otherCity">Especifica tu ciudad *</label>
+                  <input 
+                    type="text" 
+                    id="otherCity" 
+                    [(ngModel)]="registrationForm.otherCity" 
+                    name="otherCity"
+                    class="form-control"
+                    placeholder="Escribe tu ciudad"
+                    (blur)="validateForm()">
+                </div>
+
+                <!-- Meshtastic Plate Field -->
+                <div class="form-group" [class.error]="formErrors.meshPlate">
+                  <label for="meshPlate">Placa Meshtastic Favorita *</label>
+                  <input 
+                    type="text" 
+                    id="meshPlate" 
+                    [(ngModel)]="registrationForm.meshPlate" 
+                    name="meshPlate"
+                    class="form-control"
+                    placeholder="Ej: MX-1234, MESHTASTIC_1234 o el nombre de tu dispositivo"
+                    (blur)="validateForm()">
+                  <div class="error-message" *ngIf="formErrors.meshPlate">{{formErrors.meshPlate}}</div>
+                  <small class="form-text text-muted">Ingresa cualquier identificador que uses para tu dispositivo Meshtastic</small>
                 </div>
                 
                 <div class="form-group">
@@ -216,8 +248,6 @@
               <div class="success-icon">
                 <i class="fas fa-check-circle"></i>
               </div>
-              <h3>¡Registro exitoso!</h3>
-              <p>Gracias por registrarte. Te hemos enviado un correo de confirmación.</p>
               <h3>¡Registro exitoso!</h3>
               <p>Gracias por registrarte al evento. Te hemos enviado un correo de confirmación con los detalles.</p>
               <button class="btn btn-primary" (click)="closeModal()">Cerrar</button>

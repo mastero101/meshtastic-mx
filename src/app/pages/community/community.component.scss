@@ -241,34 +241,63 @@
     label {
       display: block;
       margin-bottom: 0.5rem;
-      font-weight: 500;
-      color: #444;
-      
-      &[required]::after {
-        content: ' *';
-        color: var(--mexican-red);
-      }
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 0.95rem;
     }
     
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"],
-    textarea {
+    input, textarea, select {
       width: 100%;
       padding: 0.75rem 1rem;
-      border: 1px solid #ddd;
-      border-radius: 6px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
       font-size: 1rem;
-      transition: border-color 0.3s, box-shadow 0.3s;
+      transition: all 0.3s ease;
+      background-color: #f8fafc;
+      color: #334155;
+      appearance: none;
+      
+      &::placeholder {
+        color: #94a3b8;
+        opacity: 1;
+      }
       
       &:focus {
         outline: none;
-        border-color: var(--mexican-green);
-        box-shadow: 0 0 0 3px rgba(0, 120, 94, 0.1);
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        background-color: #ffffff;
       }
       
-      &::placeholder {
-        color: #999;
+      &:hover:not(:focus) {
+        border-color: #cbd5e1;
+        background-color: #f1f5f9;
+      }
+    }
+    
+    /* Custom select dropdown */
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+      padding-right: 2.5rem;
+      cursor: pointer;
+      
+      option {
+        padding: 0.5rem 1rem;
+        background: #ffffff;
+        color: #1e293b;
+        
+        &:hover, &:focus {
+          background-color: #3b82f6;
+          color: white;
+        }
+        
+        &[value=""] {
+          color: #94a3b8;
+          font-style: italic;
+        }
       }
     }
     
@@ -277,19 +306,35 @@
       resize: vertical;
     }
     
+    .error-message {
+      color: #dc2626;
+      font-size: 0.8125rem;
+      margin-top: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      
+      &::before {
+        content: '⚠️';
+        font-size: 1em;
+      }
+    }
+    
+    .form-text {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 0.8125rem;
+      color: #64748b;
+    }
+    
     &.error {
-      input, textarea {
-        border-color: #e74c3c;
+      input, textarea, select {
+        border-color: #ef4444;
+        background-color: #fef2f2;
         
         &:focus {
-          box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+          box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
         }
-      }
-      
-      .error-message {
-        color: #e74c3c;
-        font-size: 0.85rem;
-        margin-top: 0.5rem;
       }
     }
   }
