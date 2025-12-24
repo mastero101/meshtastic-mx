@@ -37,6 +37,10 @@ export const routes: Routes = [
         path: 'apps',
         loadComponent: () => import('./pages/guides/apps/apps.component').then(m => m.AppsComponent)
       },
+      {
+        path: 'mqtt',
+        loadComponent: () => import('./pages/guides/mqtt/mqtt.component').then(m => m.MqttComponent)
+      },
     ]
   },
   {
