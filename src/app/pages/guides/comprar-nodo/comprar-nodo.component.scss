@@ -139,7 +139,7 @@ p {
   margin: 0 auto 1.2rem auto;
   max-width: 420px;
   padding-left: 0;
-  list-style: none;
+  list-style: none !important;
 }
 
 .guide-detail-list li {
@@ -154,6 +154,7 @@ p {
   display: flex;
   align-items: center;
   gap: 0.7rem;
+  list-style: none !important;
 }
 
 .guide-detail-list b {
@@ -237,7 +238,7 @@ p {
 }
 
 .models-list {
-  list-style: none;
+  list-style: none !important;
   padding: 0;
   margin: 0;
   display: grid;
@@ -258,6 +259,7 @@ p {
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+  list-style: none !important;
 }
 
 .model-name {

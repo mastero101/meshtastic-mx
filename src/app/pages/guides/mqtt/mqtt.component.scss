@@ -18,6 +18,30 @@
   }
 }
 
+.guide-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  position: absolute;
+  left: 50%;
+  top: -12px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #c62828 0%, #d32f2f 100%);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.4em 1.2em;
+  border-radius: 2em;
+  box-shadow: 0 4px 12px rgba(198, 40, 40, 0.2);
+  z-index: 10;
+  white-space: nowrap;
+  border: 2px solid #fff;
+
+  .badge-icon {
+    font-size: 1rem;
+  }
+}
+
 .guide-detail-icon {
   display: flex;
   align-items: center;
@@ -89,13 +113,14 @@ hr {
   margin: 1.5rem 0;
 }
 
-.guide-steps {
+.guide-steps,
+.guide-detail-list {
   text-align: left;
-  padding-left: 1.5rem;
+  padding: 0;
+  list-style: none !important;
   margin: 2rem 0;
 
   @media (max-width: 600px) {
-    padding-left: 1rem;
     margin: 1.5rem 0;
   }
 
@@ -104,6 +129,7 @@ hr {
     color: #1b5e20;
     font-weight: 700;
     font-size: 1.2rem;
+    list-style: none !important;
 
     @media (max-width: 600px) {
       font-size: 1.1rem;
@@ -126,7 +152,7 @@ hr {
     }
 
     ul {
-      list-style: none;
+      list-style: none !important;
       padding: 0;
       display: grid;
       grid-template-columns: 1fr;
@@ -144,6 +170,7 @@ hr {
         font-weight: 500;
         color: #333;
         transition: transform 0.2s ease;
+        list-style: none !important;
 
         &:hover {
           transform: translateX(5px);
