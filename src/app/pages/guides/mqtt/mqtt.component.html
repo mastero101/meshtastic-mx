@@ -5,50 +5,49 @@
   <h4 class="guide-detail-subtitle"><em>Pasos recomendados para configurar MQTT en un dispositivo de Meshtastic.</em></h4>
   <hr />
 
-  <ol class="guide-detail-list" style="list-style: decimal; padding-left: 1.2rem; text-align: left; max-width:720px; margin:0 auto;">
-    <li style="margin-bottom:0.8rem">
+  <ol class="guide-steps">
+    <li>
       <strong>Configurar MQTT</strong>
-      <ul style="margin-top:0.4rem">
-        <li><span class="list-icon">✅</span> <b>Enabled</b></li>
-        <li><span class="list-icon">🔁</span> <b>MapReport</b><em>Enabled</em></li>
-        <li><span class="list-icon">⚠️</span> <b>MapReport (Concentimiento de compartir información)</b><em>Enabled</em></li>
-        <li><span class="list-icon">🕑​</span> <b>MapReport - Intervalo de Actualización</b><em>6 Horas o mas si no se mueve</em></li>
-        <li><span class="list-icon">📍</span> <b>MapReport - Ubicacion Aproximada</b><em>2.9 km o mas</em></li>
-        <li><span class="list-icon">📨</span> <b>Root Topic</b><em>msh/MX</em></li>
-        <li><span class="list-icon">📡</span> <b>MQTT client Proxy</b><em>Activar para tomar internet de Celular</em></li>
-        <li><span class="list-icon">💻</span> <b>Servidor</b><em>Utilizar servidor default (mqtt.meshtastic.org)</em></li>
+      <ul>
+        <li><span class="list-icon">✅</span> <b>MQTT:</b> <em>Enabled</em></li>
+        <li><span class="list-icon">🔁</span> <b>MapReport:</b> <em>Enabled</em></li>
+        <li><span class="list-icon">⚠️</span> <b>MapReport (Consentimiento):</b> <em>Enabled</em></li>
+        <li><span class="list-icon">🕑​</span> <b>MapReport - Intervalo:</b> <em>6 Horas+</em></li>
+        <li><span class="list-icon">📍</span> <b>MapReport - Ubicacion:</b> <em>2.9 km+</em></li>
+        <li><span class="list-icon">📨</span> <b>Root Topic:</b> <em>msh/MX</em></li>
+        <li><span class="list-icon">📡</span> <b>MQTT client Proxy:</b> <em>Habilitar</em></li>
+        <li><span class="list-icon">💻</span> <b>Servidor:</b> <em>Default</em></li>
       </ul>
     </li>
 
-    <li style="margin-bottom:0.8rem">
+    <li>
       <strong>Configurar LoRa</strong>
-      <ul style="margin-top:0.4rem">
-        <li><span class="list-icon">🔀</span> <b>Ok to MQTT</b><em>Enabled</em></li>
+      <ul>
+        <li><span class="list-icon">🔀</span> <b>Ok to MQTT:</b> <em>Enabled</em></li>
       </ul>
     </li>
 
-    <li style="margin-bottom:0.8rem">
+    <li>
       <strong>Configurar Canales</strong>
-      <em>Escoger el canal que quieres que se comunique con MQTT y habilitar ambas opciones.</em>
-      <ul style="margin-top:0.4rem">
-        <li><span class="list-icon">⬆️</span> <b>Uplink Enabled</b></li>
-        <li><span class="list-icon">⬇️</span> <b>Downlink Enabled</b></li>
+      <p class="step-description">Escoger el canal que quieres que se comunique con MQTT y habilitar ambas opciones.</p>
+      <ul>
+        <li><span class="list-icon">⬆️</span> <b>Uplink:</b> <em>Enabled</em></li>
+        <li><span class="list-icon">⬇️</span> <b>Downlink:</b> <em>Enabled</em></li>
       </ul>
     </li>
 
-    <li style="margin-bottom:0.8rem">
+    <li>
       <strong>Configurar Posición</strong>
-      <ul style="margin-top:0.4rem">
-        <li><span class="list-icon">🧭</span> <b>Smart Position</b><em>Disabled</em></li>
-        <li><span class="list-icon">📍</span> <b>Device GPS</b><em>Habilitada o Fixed Position</em></li>
-        <li><span class="list-icon">⏱️</span> <b>Update interval</b><em>12 hrs</em></li>
-        <li><span class="list-icon">🏔️</span> <b>Position Flags</b>Habilitar opción:<em>Altitud</em></li>
+      <ul>
+        <li><span class="list-icon">🧭</span> <b>Smart Position:</b> <em>Disabled</em></li>
+        <li><span class="list-icon">📍</span> <b>Device GPS:</b> <em>Habilitado</em></li>
+        <li><span class="list-icon">⏱️</span> <b>Update interval:</b> <em>12 hrs</em></li>
+        <li><span class="list-icon">🏔️</span> <b>Position Flags:</b> <em>Altitud</em></li>
       </ul>
     </li>
-
   </ol>
 
-  <div class="guide-detail-cta pulse" style="margin-top:1rem">
+  <div class="guide-detail-cta pulse">
     <span>Referencias</span>
     <a class="guide-btn" href="https://meshtastic.org/docs/configuration/module/mqtt/" target="_blank">Ver configuración oficial de MQTT</a>
   </div>
