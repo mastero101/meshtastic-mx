@@ -20,7 +20,7 @@
             <h3>Red Mesh CDMX</h3>
             <p class="project-category">Infraestructura</p>
             <p class="project-description">
-              Red Mesh CDMX es la red Meshtastic más activa de México, con alrededor de <strong>6 nodos</strong> que reportan ubicación en tiempo real mediante MQTT en la Ciudad de México. Permite comunicación descentralizada y resiliente en la capital, facilitando pruebas, colaboración y cobertura en distintas zonas urbanas.
+              Red Mesh CDMX es la red Meshtastic más activa de México, con alrededor de <strong>11 nodos</strong> que reportan ubicación en tiempo real mediante MQTT en la Ciudad de México. Permite comunicación descentralizada y resiliente en la capital, facilitando pruebas, colaboración y cobertura en distintas zonas urbanas.
             </p>
             <div class="project-stats">
               <span>6 nodos en CDMX</span>
@@ -157,17 +157,99 @@
     </div>
   </section>
 
-  <!-- Contribute Section -->
-  <section class="contribute">
+  <!-- Submission Form Section -->
+  <section id="submit-project" class="submit-section">
     <div class="container">
-      <h2>¿Tienes un Proyecto?</h2>
-      <p>
-        ¿Estás desarrollando algo interesante con Meshtastic? ¡Comparte tu proyecto 
-        con la comunidad y encuentra colaboradores!
-      </p>
-      <div class="contribute-buttons">
-        <a href="#" class="btn btn-primary">Subir Proyecto</a>
-        <a href="#" class="btn btn-secondary">Ver Guías</a>
+      <div class="submit-wrapper glass-card">
+        <div class="submit-info">
+          <h2>¿Tienes un Proyecto?</h2>
+          <p>
+            ¿Estás desarrollando algo interesante con Meshtastic? ¡Comparte tu proyecto 
+            con la comunidad y encuentra colaboradores!
+          </p>
+          <ul class="benefits-list">
+            <li><i class="fas fa-check-circle"></i> Visibilidad nacional</li>
+            <li><i class="fas fa-check-circle"></i> Conecta con expertos</li>
+            <li><i class="fas fa-check-circle"></i> Impulsa la red en México</li>
+          </ul>
+        </div>
+
+        <div class="submit-form-container">
+          <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="project-form" *ngIf="!isSubmitted">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="projectName">Nombre del Proyecto</label>
+                <input type="text" id="projectName" formControlName="projectName" placeholder="Ej. Red Mesh Guadalajara">
+                <span class="error" *ngIf="projectForm.get('projectName')?.touched && projectForm.get('projectName')?.errors?.['required']">El nombre es requerido</span>
+              </div>
+
+              <div class="form-group">
+                <label for="category">Categoría</label>
+                <select id="category" formControlName="category">
+                  <option value="">Selecciona una categoría</option>
+                  <option value="infrastructure">Infraestructura</option>
+                  <option value="agriculture">Agricultura</option>
+                  <option value="emergency">Emergencias</option>
+                  <option value="education">Educación</option>
+                  <option value="other">Otro</option>
+                </select>
+                <span class="error" *ngIf="projectForm.get('category')?.touched && projectForm.get('category')?.errors?.['required']">La categoría es requerida</span>
+              </div>
+
+              <div class="form-group">
+                <label for="state">Estado</label>
+                <select id="state" formControlName="state">
+                  <option value="">Selecciona un estado</option>
+                  <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+                </select>
+                <span class="error" *ngIf="projectForm.get('state')?.touched && projectForm.get('state')?.errors?.['required']">El estado es requerido</span>
+              </div>
+
+              <div class="form-group">
+                <label for="city">Ciudad / Municipio</label>
+                <input type="text" id="city" formControlName="city" placeholder="Ej. Zapopan">
+                <span class="error" *ngIf="projectForm.get('city')?.touched && projectForm.get('city')?.errors?.['required']">La ciudad es requerida</span>
+              </div>
+
+              <div class="form-group">
+                <label for="hardware">Hardware (Opcional)</label>
+                <input type="text" id="hardware" formControlName="hardware" placeholder="Ej. Heltec V3, T-Beam">
+              </div>
+
+              <div class="form-group">
+                <label for="contactEmail">Email de Contacto</label>
+                <input type="email" id="contactEmail" formControlName="contactEmail" placeholder="tu@email.com">
+                <span class="error" *ngIf="projectForm.get('contactEmail')?.touched && projectForm.get('contactEmail')?.errors?.['required']">El email es requerido</span>
+                <span class="error" *ngIf="projectForm.get('contactEmail')?.touched && projectForm.get('contactEmail')?.errors?.['email']">Email inválido</span>
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="description">Descripción del Proyecto</label>
+              <textarea id="description" formControlName="description" rows="4" placeholder="Cuéntanos sobre tu proyecto, objetivos y tecnología utilizada..."></textarea>
+              <span class="error" *ngIf="projectForm.get('description')?.touched && projectForm.get('description')?.errors?.['required']">La descripción es requerida</span>
+              <span class="error" *ngIf="projectForm.get('description')?.touched && projectForm.get('description')?.errors?.['minlength']">Mínimo 20 caracteres</span>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="projectLink">Link del Proyecto (Opcional)</label>
+              <input type="url" id="projectLink" formControlName="projectLink" placeholder="https://github.com/tu-proyecto">
+            </div>
+
+            <button type="submit" class="btn btn-primary submit-btn" [disabled]="projectForm.invalid || isSending">
+              <i class="fas" [class.fa-paper-plane]="!isSending" [class.fa-spinner]="isSending" [class.fa-spin]="isSending"></i>
+              {{ isSending ? 'Enviando...' : 'Enviar Proyecto' }}
+            </button>
+          </form>
+
+          <!-- Success Message -->
+          <div class="success-message" *ngIf="isSubmitted">
+            <div class="success-icon">✅</div>
+            <h3>¡Proyecto Recibido!</h3>
+            <p>Gracias por contribuir a la comunidad. Revisaremos tu proyecto y lo publicaremos pronto.</p>
+            <button class="btn btn-secondary" (click)="isSubmitted = false">Enviar otro</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
