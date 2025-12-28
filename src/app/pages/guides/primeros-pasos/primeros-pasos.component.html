@@ -10,48 +10,71 @@
     <strong>¡Advertencia!</strong> No conectes el módulo sin tener la antena instalada.<br>
     <span class="warning-text">Esto puede dañar permanentemente el dispositivo.</span>
   </div>
-  <ol class="guide-steps">
-    <li>
-      <strong>Flashear</strong>
-      <ul>
-        <li><span class="list-icon">💻</span> <b>Web Flasher:</b> <em>Instala el firmware desde <a href="https://flasher.meshtastic.org/" target="_blank">flasher.meshtastic.org</a>.</em></li>
-      </ul>
-    </li>
-    <li>
-      <strong>Aplicación</strong>
-      <ul>
-        <li><span class="list-icon">📲</span> <b>Descarga:</b> <em>Instala la app en <a href="https://play.google.com/store/apps/details/Meshtastic?id=com.geeksville.mesh&hl=es_MX" target="_blank">Android</a> o <a href="https://apps.apple.com/in/app/meshtastic/id1586432531" target="_blank">iOS</a>.</em></li>
-      </ul>
-    </li>
-    <li>
-      <strong>Conexión</strong>
-      <ul>
-        <li><span class="list-icon">🔗</span> <b>Bluetooth:</b> <em>Enciende tu nodo y conéctalo desde la aplicación.</em></li>
-      </ul>
-    </li>
-    <li>
-      <strong>Configuración</strong>
-      <ul>
-        <li><span class="list-icon">⚙️</span> <b>Red:</b> <em>Ajusta la frecuencia (915MHz) y el nombre de tu nodo.</em></li>
-      </ul>
-    </li>
-    <li>
-      <strong>Prueba</strong>
-      <ul>
-        <li><span class="list-icon">✉️</span> <b>Mensaje:</b> <em>Envía tu primer mensaje de prueba a la red local.</em></li>
-      </ul>
-    </li>
-  </ol>
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <div class="step-header">
+          <span class="step-icon">💻</span>
+          <strong>Flashear Firmware</strong>
+        </div>
+        <p class="step-desc">Instala el sistema operativo de Meshtastic en tu dispositivo usando el flasheador web oficial.</p>
+        <a class="guide-btn btn-sm" href="https://flasher.meshtastic.org/" target="_blank">Abrir Web Flasher</a>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <div class="step-header">
+          <span class="step-icon">📲</span>
+          <strong>Instalar App</strong>
+        </div>
+        <p class="step-desc">Descarga la aplicación móvil para configurar y comunicarte con tu nodo.</p>
+        <div class="step-actions">
+          <a class="guide-btn btn-sm" href="https://play.google.com/store/apps/details/Meshtastic?id=com.geeksville.mesh&hl=es_MX" target="_blank">Android</a>
+          <a class="guide-btn btn-sm" href="https://apps.apple.com/in/app/meshtastic/id1586432531" target="_blank" style="background: #1a1a1a;">iOS</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <div class="step-header">
+          <span class="step-icon">🔗</span>
+          <strong>Vincular Nodo</strong>
+        </div>
+        <p class="step-desc">Enciende el Bluetooth de tu móvil y vincula el dispositivo desde la sección de configuración de la app.</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <div class="step-header">
+          <span class="step-icon">⚙️</span>
+          <strong>Configuración</strong>
+        </div>
+        <p class="step-desc">Ajusta la región (915MHz para México), el nombre de usuario y el nombre de tu nodo.</p>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-number">5</div>
+      <div class="step-content">
+        <div class="step-header">
+          <span class="step-icon">✉️</span>
+          <strong>Primer Mensaje</strong>
+        </div>
+        <p class="step-desc">¡Listo! Envía un mensaje al canal "LongFast" para confirmar que todo funciona correctamente.</p>
+      </div>
+    </div>
+  </div>
 
   <div class="guide-detail-cta pulse">
-    <span>¿Listo para empezar?</span>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-      <a class="guide-btn" href="https://play.google.com/store/apps/details/Meshtastic?id=com.geeksville.mesh&hl=es_MX" target="_blank">
-        Android
-      </a>
-      <a class="guide-btn" href="https://apps.apple.com/in/app/meshtastic/id1586432531" target="_blank" style="background: #000;">
-        iOS
-      </a>
-    </div>
+    <span>¿Necesitas una guía más detallada?</span>
+    <p style="font-size: 0.9rem; margin-bottom: 1rem; color: #666;">Visita la documentación oficial para resolver dudas técnicas.</p>
+    <a class="guide-btn" href="https://meshtastic.org/docs/getting-started/" target="_blank">Documentación Oficial</a>
   </div>
 </div>
