@@ -12,6 +12,12 @@ export class HeaderComponent {
   isMobileMenuOpen = false;
   isLogoHovered = false;
   isLogoClicked = false;
+  isScrolled = false;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrolled = window.scrollY > 20;
+  }
 
   @HostListener('document:animationend', ['$event'])
   onAnimationEnd(event: AnimationEvent) {

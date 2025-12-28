@@ -1,4 +1,4 @@
-<header class="header">
+<header class="header" [class.scrolled]="isScrolled">
   <div class="container">
     <div class="logo">
       <a routerLink="/" class="logo-link" (click)="isLogoClicked = true" (mouseenter)="isLogoHovered = true" (mouseleave)="isLogoHovered = false">
@@ -16,14 +16,28 @@
     </div>
     
     <nav class="nav" [class.mobile-open]="isMobileMenuOpen">
+      <div class="mobile-nav-header">
+        <span class="mobile-logo">Meshtastic <span>MX</span></span>
+      </div>
+      
       <ul class="nav-list">
-        <li><a routerLink="/" routerLinkActive="active" (click)="closeMobileMenu()">Inicio</a></li>
-        <li><a routerLink="/about" routerLinkActive="active" (click)="closeMobileMenu()">Acerca de</a></li>
-        <li><a routerLink="/community" routerLinkActive="active" (click)="closeMobileMenu()">Comunidad</a></li>
-        <li><a routerLink="/guides" routerLinkActive="active" (click)="closeMobileMenu()">Guías</a></li>
-        <li><a routerLink="/projects" routerLinkActive="active" (click)="closeMobileMenu()">Proyectos</a></li>
+        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobileMenu()"><i class="fas fa-home"></i> Inicio</a></li>
+        <li><a routerLink="/about" routerLinkActive="active" (click)="closeMobileMenu()"><i class="fas fa-info-circle"></i> Acerca de</a></li>
+        <li><a routerLink="/community" routerLinkActive="active" (click)="closeMobileMenu()"><i class="fas fa-users"></i> Comunidad</a></li>
+        <li><a routerLink="/guides" routerLinkActive="active" (click)="closeMobileMenu()"><i class="fas fa-book"></i> Guías</a></li>
+        <li><a routerLink="/projects" routerLinkActive="active" (click)="closeMobileMenu()"><i class="fas fa-project-diagram"></i> Proyectos</a></li>
       </ul>
+
+      <div class="mobile-nav-footer">
+        <p>Síguenos en redes</p>
+        <div class="mobile-socials">
+          <a href="https://github.com/mastero101/meshtastic-mx"><i class="fab fa-github"></i></a>
+          <a href="https://t.me/meshtastic_mexico"><i class="fab fa-telegram"></i></a>
+        </div>
+      </div>
     </nav>
+
+    <div class="nav-backdrop" [class.active]="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
 
     <div class="mobile-menu-toggle" [class.active]="isMobileMenuOpen" (click)="toggleMobileMenu()">
       <span></span>

@@ -1,45 +1,63 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-content">
-      <div class="footer-section">
-        <h3>Meshtastic México</h3>
-        <p>Comunidad dedicada a promover y desarrollar la tecnología Meshtastic en México.</p>
+      <div class="footer-section branding">
+        <h3>Meshtastic <span>México</span></h3>
+        <p>Impulsando la red de comunicación mesh más grande de México. Descentralizada, segura y libre.</p>
         <div class="social-links">
-          <a href="#" target="_blank" aria-label="GitHub">
+          <a href="https://github.com/mastero101/meshtastic-mx" target="_blank" aria-label="GitHub">
             <i class="fab fa-github"></i>
           </a>
-          <a href="#" target="_blank" aria-label="Discord">
-            <i class="fab fa-discord"></i>
-          </a>
-          <a href="#" target="_blank" aria-label="Telegram">
+          <a href="https://t.me/meshtastic_mexico" target="_blank" aria-label="Telegram">
             <i class="fab fa-telegram"></i>
           </a>
         </div>
       </div>
       
       <div class="footer-section">
-        <h4>Enlaces</h4>
+        <h4>Navegación</h4>
         <ul>
-          <li><a routerLink="/">Inicio</a></li>
-          <li><a routerLink="/about">Acerca de</a></li>
-          <li><a routerLink="/community">Comunidad</a></li>
-          <li><a routerLink="/projects">Proyectos</a></li>
+          <li><a routerLink="/"><i class="fas fa-chevron-right"></i> Inicio</a></li>
+          <li><a routerLink="/about"><i class="fas fa-chevron-right"></i> Acerca de</a></li>
+          <li><a routerLink="/guides"><i class="fas fa-chevron-right"></i> Guías de Usuario</a></li>
+          <li><a routerLink="/community"><i class="fas fa-chevron-right"></i> Comunidad</a></li>
+          <li><a routerLink="/projects"><i class="fas fa-chevron-right"></i> Proyectos</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4>Mapa y Red</h4>
+        <ul>
+          <li><a href="https://map.meshtastic.org" target="_blank"><i class="fas fa-map-marked-alt"></i> Mapa Global</a></li>
+          <li><a href="https://meshtastic.org/docs/introduction" target="_blank"><i class="fas fa-network-wired"></i> ¿Cómo funciona?</a></li>
+          <li><a href="https://meshtastic.org/docs/software/mqtt" target="_blank"><i class="fas fa-plug"></i> Nodos MQTT</a></li>
         </ul>
       </div>
       
       <div class="footer-section">
-        <h4>Recursos</h4>
+        <h4>Recursos Oficiales</h4>
         <ul>
           <li><a href="https://meshtastic.org" target="_blank">Meshtastic.org</a></li>
           <li><a href="https://docs.meshtastic.org" target="_blank">Documentación</a></li>
-          <li><a href="https://github.com/meshtastic" target="_blank">GitHub</a></li>
-          <li><a href="https://meshtastic.discourse.group" target="_blank">Foro</a></li>
+          <li><a href="https://github.com/meshtastic" target="_blank">GitHub Oficial</a></li>
+          <li><a href="https://meshtastic.discourse.group" target="_blank">Foro Global</a></li>
         </ul>
       </div>
     </div>
     
     <div class="footer-bottom">
-      <p>&copy; 2025 Meshtastic México. Todos los derechos reservados.</p>
+      <div class="footer-bottom-content">
+        <p>&copy; 2025 Meshtastic México</p>
+        <p class="made-in-mx">
+          Hecho con <i class="fas fa-heart"></i> Por la Comunidad de Meshtastic México
+          <svg class="footer-flag" viewBox="0 0 60 40" width="24" height="16">
+            <rect width="20" height="40" fill="#006341"/>
+            <rect x="20" width="20" height="40" fill="#FFFFFF"/>
+            <rect x="40" width="20" height="40" fill="#CE1126"/>
+            <path d="M30,20 L35,25 L30,30 L25,25 Z" fill="#F9D71C" stroke="#000" stroke-width="0.5"/>
+          </svg>
+        </p>
+      </div>
     </div>
   </div>
 </footer>
