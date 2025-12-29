@@ -12,9 +12,9 @@
   transition: all 0.3s ease;
 
   @media (max-width: 600px) {
-    padding: 2rem 1rem 1.5rem 1rem;
-    margin: 1rem;
-    border-radius: 1rem;
+    padding: 1.5rem 0.75rem;
+    margin: 0.75rem 0.5rem;
+    border-radius: 1.25rem;
   }
 }
 
@@ -134,17 +134,35 @@ p {
 
   li {
     background: #f9fdfa;
-    padding: 0.8rem 1rem;
-    border-radius: 0.8rem;
+    padding: 1rem 1.25rem;
+    border-radius: 1rem;
     border: 1px solid #edf7ef;
     display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    font-size: 0.95rem;
+    align-items: flex-start;
+    flex-direction: column; // Stack by default for better control
+    gap: 0.6rem;
+    font-size: 1rem;
     color: #333;
-    margin-bottom: 0.8rem;
+    margin-bottom: 1rem;
     list-style: none !important;
     list-style-type: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(56, 142, 60, 0.08);
+    }
+
+    strong {
+      color: #1b5e20;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: block;
+      width: 100%;
+      border-bottom: 1px dashed #e8f5e9;
+      padding-bottom: 0.4rem;
+    }
 
     b {
       color: #2e7d32;
@@ -156,8 +174,12 @@ p {
     }
 
     @media (max-width: 600px) {
-      font-size: 0.9rem;
-      padding: 0.6rem 0.8rem;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.8rem;
+
+      strong {
+        font-size: 1rem;
+      }
     }
 
     /* Nested lists */
@@ -173,9 +195,57 @@ p {
         margin-bottom: 0;
         background: transparent;
         border: none;
-        padding: 0.2rem 0;
-        list-style: none !important;
-        list-style-type: none !important;
+        padding: 0.4rem 0;
+        display: flex;
+        align-items: flex-start;
+        flex-direction: row;
+        gap: 0.75rem;
+        box-shadow: none;
+        transform: none !important;
+
+        .list-content {
+          flex: 1;
+          line-height: 1.4;
+          text-align: left;
+
+          b {
+            color: #2e7d32;
+            font-weight: 600;
+            display: inline-block;
+          }
+
+          em {
+            font-style: italic;
+            color: #555;
+            font-size: 0.95rem;
+          }
+
+          @media (max-width: 480px) {
+            b {
+              display: block;
+              margin-bottom: 0.1rem;
+              font-size: 0.95rem;
+            }
+
+            em {
+              font-size: 0.85rem;
+            }
+          }
+        }
+
+        &:hover {
+          transform: none !important;
+          box-shadow: none;
+        }
+
+        @media (max-width: 480px) {
+          gap: 0.5rem;
+
+          .list-icon {
+            font-size: 1.1rem;
+            margin-top: 0.1rem;
+          }
+        }
       }
     }
   }
