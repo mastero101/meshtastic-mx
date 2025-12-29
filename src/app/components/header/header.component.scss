@@ -63,6 +63,7 @@
       font-size: 1.6rem;
       font-weight: 800;
       letter-spacing: -0.5px;
+      white-space: nowrap; // Keep brand on one line by default
     }
   }
 
@@ -242,6 +243,8 @@
 
   .mobile-menu-toggle {
     display: flex;
+    margin-left: auto; // Push to far right
+    padding: 0;
 
     span {
       background: #333;
@@ -250,6 +253,39 @@
     &.active span {
       background: #333 !important;
     }
+  }
+
+  .logo {
+    .logo-link h1 {
+      font-size: 1.25rem;
+      gap: 6px;
+      white-space: nowrap;
+
+      .logo-text {
+        font-size: 1.1rem;
+        display: flex;
+        flex-direction: row; // Keep on one line
+        gap: 4px;
+        line-height: normal;
+
+        .mexico-text {
+          font-size: 1.1rem;
+        }
+      }
+    }
+
+    .mexico-flag {
+      width: 24px;
+      height: 16px;
+      margin-top: 1px;
+    }
+  }
+
+  .container {
+    padding: 0 1rem; // Maximize usable width
+    height: 64px; // Fixed height for centering
+    display: flex;
+    align-items: center;
   }
 
   .header.scrolled .mobile-menu-toggle span {
