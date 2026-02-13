@@ -88,8 +88,8 @@ export class CommunityComponent {
       date: new Date(2026, 1, 17, 17, 0), // February 17, 2026 at 5:00 PM
       endDate: new Date(2026, 1, 17, 19, 0), // February 17, 2026 at 7:00 PM
       location: 'Remesal 3A, Barrio Guadalupe, Chiapas',
-      description: 'Serie de discusiones enfocada en tecnologías descentralizadas y de código abierto. Cooperación voluntaria. 5:00 PM.',
-      details: 'En las últimas semanas, hemos conseguido atraer a otras personas dispuestas a ayudar y colaborar en el crecimiento de Meshtastic en Chiapas. Ahora tenemos una reunión para presentar Meshtastic a nuevas personas interesadas. Se trata de compartir nuestros avances hasta ahora y animar a más personas a que ayuden a hacer crecer los grupos locales de malla. ¡Estamos muy emocionados por los próximos pasos! Cooperación voluntaria.',
+      description: 'Serie de discusiones enfocada en tecnologías descentralizadas y de código abierto. Entrada Libre. 5:00 PM.',
+      details: 'En las últimas semanas, hemos conseguido atraer a otras personas dispuestas a ayudar y colaborar en el crecimiento de Meshtastic en Chiapas. Ahora tenemos una reunión para presentar Meshtastic a nuevas personas interesadas. Se trata de compartir nuestros avances hasta ahora y animar a más personas a que ayuden a hacer crecer los grupos locales de malla. ¡Estamos muy emocionados por los próximos pasos! Entrada Libre.',
       image: 'images/events/tech-that-liberates.jpg'
     }
   ];
