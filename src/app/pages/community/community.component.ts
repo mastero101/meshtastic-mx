@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 interface Event {
   title: string;
   date: Date;
+  endDate: Date;
   location: string;
   description: string;
   details: string;
@@ -23,7 +24,7 @@ export class CommunityComponent {
   selectedEvent: Event | null = null;
   showRegistrationForm = false;
   registrationSuccess = false;
-  
+
   // Mexican states and cities
   mexicanCities = [
     'Aguascalientes',
@@ -83,26 +84,13 @@ export class CommunityComponent {
 
   events: Event[] = [
     {
-      title: 'Taller de Construcción de Nodos',
-      date: new Date(2025, 11, 15), // December is 11 (0-based)
-      location: 'CDMX',
-      description: 'Aprende a construir tu propio nodo Meshtastic desde cero. Incluye todos los materiales necesarios.',
-      details: 'Este taller está diseñado para principiantes que deseen adentrarse en el mundo de las redes Mesh. Cubriremos desde los conceptos básicos hasta la configuración avanzada. No se requiere experiencia previa. Incluye kit de inicio con placa, antena y componentes necesarios.',
-      image: 'assets/images/workshop.jpg'
-    },
-    {
-      title: 'Meetup Virtual: Aplicaciones Prácticas',
-      date: new Date(2025, 10, 30), // November 30
-      location: 'En línea',
-      description: 'Presentación de casos de uso reales y aplicaciones prácticas de Meshtastic en México.',
-      details: 'Sesión virtual donde miembros de la comunidad compartirán sus experiencias implementando redes Meshtastic en diferentes contextos. Incluye sesión de preguntas y respuestas. Se enviará enlace de Zoom a los registrados.'
-    },
-    {
-      title: 'Reunión Anual Meshtastic 2025',
-      date: new Date(2025, 11, 15), // December 15
-      location: 'CDMX',
-      description: 'Evento de Reunión anual de la comunidad Meshtastic México.',
-      details: 'Únete a nosotros en nuestro evento más importante del año. Tendremos charlas técnicas, talleres prácticos, demostraciones en vivo y la oportunidad de conocer a otros entusiastas de las redes Mesh en México. Incluye comida y bebidas. Cupo limitado.'
+      title: 'Tech That Liberates - Vol 1: Meshtastic',
+      date: new Date(2026, 1, 17, 17, 0), // February 17, 2026 at 5:00 PM
+      endDate: new Date(2026, 1, 17, 19, 0), // February 17, 2026 at 7:00 PM
+      location: 'Remesal 3A, Barrio Guadalupe, Chiapas',
+      description: 'Serie de discusiones enfocada en tecnologías descentralizadas y de código abierto. Cooperación voluntaria. 5:00 PM.',
+      details: 'En las últimas semanas, hemos conseguido atraer a otras personas dispuestas a ayudar y colaborar en el crecimiento de Meshtastic en Chiapas. Ahora tenemos una reunión para presentar Meshtastic a nuevas personas interesadas. Se trata de compartir nuestros avances hasta ahora y animar a más personas a que ayuden a hacer crecer los grupos locales de malla. ¡Estamos muy emocionados por los próximos pasos! Cooperación voluntaria.',
+      image: 'images/events/tech-that-liberates.jpg'
     }
   ];
 
@@ -120,7 +108,7 @@ export class CommunityComponent {
     this.resetForm();
     document.body.style.overflow = 'auto';
   }
-  
+
   showRegistration(event?: MouseEvent): void {
     if (event) {
       event.preventDefault();
@@ -135,7 +123,7 @@ export class CommunityComponent {
       this.showRegistrationForm = true;
     });
   }
-  
+
   resetForm(): void {
     this.registrationForm = {
       name: '',
@@ -154,41 +142,41 @@ export class CommunityComponent {
       meshPlate: ''
     };
   }
-  
+
   validateForm(): boolean {
     let isValid = true;
-    
+
     // Reset errors
     this.formErrors = {
       name: !this.registrationForm.name ? 'El nombre es requerido' : '',
-      email: !this.registrationForm.email ? 'El correo electrónico es requerido' : 
-            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.registrationForm.email) ? 'Ingresa un correo válido' : '',
-      phone: !this.registrationForm.phone ? 'El teléfono es requerido' : 
-            !/^[0-9\-\+\(\)\s]{10,15}$/.test(this.registrationForm.phone) ? 'Ingresa un teléfono válido' : '',
+      email: !this.registrationForm.email ? 'El correo electrónico es requerido' :
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.registrationForm.email) ? 'Ingresa un correo válido' : '',
+      phone: !this.registrationForm.phone ? 'El teléfono es requerido' :
+        !/^[0-9\-\+\(\)\s]{10,15}$/.test(this.registrationForm.phone) ? 'Ingresa un teléfono válido' : '',
       city: !this.registrationForm.city ? 'La ciudad es requerida' : '',
       meshPlate: !this.registrationForm.meshPlate ? 'La placa Meshtastic es requerida' : ''
     };
-    
+
     // If "Otra" is selected, require the otherCity field
     if (this.registrationForm.city === 'Otra' && !this.registrationForm.otherCity) {
       this.formErrors.city = 'Por favor especifica tu ciudad';
       isValid = false;
     }
-    
+
     // Check if there are any errors
     Object.values(this.formErrors).forEach(error => {
       if (error) isValid = false;
     });
-    
+
     return isValid;
   }
-  
+
   onSubmit(): void {
     console.log('Form submission started');
     if (this.validateForm()) {
       // If "Otra" is selected, use the otherCity value
-      const cityToSave = this.registrationForm.city === 'Otra' 
-        ? this.registrationForm.otherCity 
+      const cityToSave = this.registrationForm.city === 'Otra'
+        ? this.registrationForm.otherCity
         : this.registrationForm.city;
 
       const formData = {
@@ -197,14 +185,14 @@ export class CommunityComponent {
       };
 
       console.log('Form submitted:', formData);
-      
+
       // Here you would typically send formData to your backend
       // For example:
       // this.yourService.submitRegistration(formData).subscribe(...);
-      
+
       // Show success message
       this.registrationSuccess = true;
-      
+
       // Reset the form after a delay
       setTimeout(() => {
         this.closeModal();
@@ -224,5 +212,22 @@ export class CommunityComponent {
 
   getMonthName(date: Date): string {
     return date.toLocaleDateString('es-MX', { month: 'short' });
+  }
+
+  getGoogleCalendarUrl(event: Event): string {
+    const formatDate = (d: Date): string => {
+      return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    };
+
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: event.title,
+      dates: `${formatDate(event.date)}/${formatDate(event.endDate)}`,
+      location: event.location,
+      details: event.details,
+      ctz: 'America/Mexico_City'
+    });
+
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
   }
 }

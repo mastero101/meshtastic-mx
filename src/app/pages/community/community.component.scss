@@ -114,13 +114,18 @@
 
 // Buttons
 .btn {
-  display: inline-block;
-  padding: 0.75rem 2rem;
-  border-radius: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
+  font-size: 0.9rem;
   transition: all 0.3s ease;
   border: 2px solid transparent;
+  cursor: pointer;
 
   &.btn-primary {
     background: var(--mexican-green);
@@ -129,7 +134,19 @@
     &:hover {
       background: var(--dark-green);
       transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0, 108, 71, 0.3);
+      box-shadow: 0 6px 20px rgba(0, 108, 71, 0.35);
+    }
+  }
+
+  &.btn-secondary {
+    background: transparent;
+    color: #555;
+    border: 2px solid #ddd;
+
+    &:hover {
+      background: #f5f5f5;
+      border-color: #bbb;
+      transform: translateY(-1px);
     }
   }
 }
@@ -154,11 +171,40 @@
 
   .event-card {
     display: flex;
+    flex-direction: column;
     background: white;
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     border-left: 4px solid var(--mexican-red);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .event-image {
+      width: 100%;
+      max-height: 220px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      &:hover img {
+        transform: scale(1.03);
+      }
+    }
+
+    .event-info {
+      display: flex;
+    }
 
     .event-date {
       background: var(--mexican-red);
@@ -204,28 +250,121 @@
         margin-bottom: 1rem;
       }
 
+      .event-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        padding-top: 0.75rem;
+        border-top: 1px solid #f0f0f0;
+      }
+
       .event-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
         color: var(--mexican-red);
         text-decoration: none;
         font-weight: 600;
-        transition: color 0.3s ease;
+        font-size: 0.88rem;
+        padding: 0.45rem 1rem;
+        border-radius: 8px;
+        border: 1.5px solid var(--mexican-red);
+        transition: all 0.3s ease;
+        background: transparent;
+
+        i {
+          font-size: 0.85rem;
+        }
 
         &:hover {
-          color: var(--dark-red);
+          background: var(--mexican-red);
+          color: white;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(206, 17, 38, 0.25);
+        }
+      }
+
+      .btn-calendar {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: #4285f4;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.88rem;
+        padding: 0.45rem 1rem;
+        border-radius: 8px;
+        border: 1.5px solid #4285f4;
+        transition: all 0.3s ease;
+        background: transparent;
+
+        i {
+          font-size: 0.85rem;
+        }
+
+        &:hover {
+          background: #4285f4;
+          color: white;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(66, 133, 244, 0.25);
         }
       }
     }
   }
 }
 
+// Modal Event Image
+.modal-event-image {
+  width: 100%;
+  max-height: 350px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+}
+
+// Google Calendar Button in Modal
+.btn-calendar-modal {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  background: #4285f4 !important;
+  color: white !important;
+  text-decoration: none;
+  border: 2px solid #4285f4 !important;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+
+  i {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    background: #3367d6 !important;
+    border-color: #3367d6 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(66, 133, 244, 0.35);
+  }
+}
+
 // Form Styles
-.registration-form, .success-message {
+.registration-form,
+.success-message {
   h3 {
     color: var(--gray-dark);
     margin-top: 0;
     margin-bottom: 1.5rem;
   }
-  
+
   p {
     color: #555;
     line-height: 1.7;
@@ -237,7 +376,7 @@
   .form-group {
     margin-bottom: 1.5rem;
     position: relative;
-    
+
     label {
       display: block;
       margin-bottom: 0.5rem;
@@ -245,8 +384,10 @@
       color: #2c3e50;
       font-size: 0.95rem;
     }
-    
-    input, textarea, select {
+
+    input,
+    textarea,
+    select {
       width: 100%;
       padding: 0.75rem 1rem;
       border: 2px solid #e2e8f0;
@@ -256,25 +397,25 @@
       background-color: #f8fafc;
       color: #334155;
       appearance: none;
-      
+
       &::placeholder {
         color: #94a3b8;
         opacity: 1;
       }
-      
+
       &:focus {
         outline: none;
         border-color: #3b82f6;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         background-color: #ffffff;
       }
-      
+
       &:hover:not(:focus) {
         border-color: #cbd5e1;
         background-color: #f1f5f9;
       }
     }
-    
+
     /* Custom select dropdown */
     select {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
@@ -283,29 +424,30 @@
       background-size: 1em;
       padding-right: 2.5rem;
       cursor: pointer;
-      
+
       option {
         padding: 0.5rem 1rem;
         background: #ffffff;
         color: #1e293b;
-        
-        &:hover, &:focus {
+
+        &:hover,
+        &:focus {
           background-color: #3b82f6;
           color: white;
         }
-        
+
         &[value=""] {
           color: #94a3b8;
           font-style: italic;
         }
       }
     }
-    
+
     textarea {
       min-height: 100px;
       resize: vertical;
     }
-    
+
     .error-message {
       color: #dc2626;
       font-size: 0.8125rem;
@@ -313,32 +455,35 @@
       display: flex;
       align-items: center;
       gap: 0.25rem;
-      
+
       &::before {
         content: '⚠️';
         font-size: 1em;
       }
     }
-    
+
     .form-text {
       display: block;
       margin-top: 0.35rem;
       font-size: 0.8125rem;
       color: #64748b;
     }
-    
+
     &.error {
-      input, textarea, select {
+
+      input,
+      textarea,
+      select {
         border-color: #ef4444;
         background-color: #fef2f2;
-        
+
         &:focus {
           box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
         }
       }
     }
   }
-  
+
   .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -346,7 +491,7 @@
     margin-top: 2rem;
     padding-top: 1.5rem;
     border-top: 1px solid #eee;
-    
+
     .btn {
       min-width: 120px;
       text-align: center;
@@ -357,18 +502,18 @@
 .success-message {
   text-align: center;
   padding: 2rem 0;
-  
+
   .success-icon {
     color: var(--mexican-green);
     font-size: 4rem;
     margin-bottom: 1.5rem;
   }
-  
+
   h3 {
     color: var(--mexican-green);
     margin-bottom: 1rem;
   }
-  
+
   p {
     color: #555;
     margin-bottom: 2rem;
@@ -376,7 +521,7 @@
     margin-left: auto;
     margin-right: auto;
   }
-  
+
   .btn {
     min-width: 200px;
   }
@@ -494,6 +639,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -650,11 +796,17 @@
   }
 
   .event-card {
-    flex-direction: column;
+    .event-info {
+      flex-direction: column;
+    }
 
     .event-date {
       min-width: auto;
       padding: 1rem;
+    }
+
+    .event-image {
+      max-height: 300px;
     }
   }
 

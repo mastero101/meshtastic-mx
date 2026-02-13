@@ -98,17 +98,29 @@
       <h2>Próximos Eventos</h2>
       <div class="events-grid">
         <div class="event-card" *ngFor="let event of events" (click)="openModal(event)">
-          <div class="event-date">
-            <span class="day">{{event.date.getDate()}}</span>
-            <span class="month">{{getMonthName(event.date)}}</span>
+          <div class="event-image" *ngIf="event.image">
+            <img [src]="event.image" [alt]="event.title">
           </div>
-          <div class="event-content">
-            <h3>{{event.title}}</h3>
-            <p class="event-location">📍 {{event.location}}</p>
-            <p class="event-description">
-              {{event.description}}
-            </p>
-            <a href="javascript:void(0)" class="event-link">Más información →</a>
+          <div class="event-info">
+            <div class="event-date">
+              <span class="day">{{event.date.getDate()}}</span>
+              <span class="month">{{getMonthName(event.date)}}</span>
+            </div>
+            <div class="event-content">
+              <h3>{{event.title}}</h3>
+              <p class="event-location">📍 {{event.location}}</p>
+              <p class="event-description">
+                {{event.description}}
+              </p>
+              <div class="event-actions">
+                <a href="javascript:void(0)" class="event-link">
+                  <i class="fas fa-info-circle"></i> Más información
+                </a>
+                <a [href]="getGoogleCalendarUrl(event)" target="_blank" rel="noopener" class="btn-calendar" (click)="$event.stopPropagation()" title="Agregar a Google Calendar">
+                  <i class="fab fa-google"></i> Agregar al Calendario
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -125,6 +137,10 @@
                 <i class="fas fa-calendar"></i>
                 {{getFormattedDate(selectedEvent.date)}}
               </span>
+              <span class="event-time">
+                <i class="fas fa-clock"></i>
+                5:00 PM - 7:00 PM
+              </span>
               <span class="event-location">
                 <i class="fas fa-map-marker-alt"></i>
                 {{selectedEvent.location}}
@@ -134,11 +150,16 @@
 
           <div class="modal-body" *ngIf="selectedEvent">
             <div class="event-details" *ngIf="!showRegistrationForm && !registrationSuccess">
+              <div class="modal-event-image" *ngIf="selectedEvent.image">
+                <img [src]="selectedEvent.image" [alt]="selectedEvent.title">
+              </div>
               <h3>Detalles del Evento</h3>
               <p>{{selectedEvent.details}}</p>
               
               <div class="event-cta">
-                <button class="btn btn-primary" (click)="showRegistration()">Registrarse</button>
+                <a [href]="getGoogleCalendarUrl(selectedEvent)" target="_blank" rel="noopener" class="btn btn-calendar-modal">
+                  <i class="fab fa-google"></i> Agregar a Google Calendar
+                </a>
                 <button class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
               </div>
             </div>
