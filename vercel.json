@@ -1,0 +1,17 @@
+{
+    "version": 2,
+    "rewrites": [
+        {
+            "source": "/mesh-api/(.*)",
+            "destination": "https://my.meshview.world/mexico/api/$1"
+        },
+        {
+            "source": "/meshtastic-api/(.*)",
+            "destination": "https://api.meshtastic.org/$1"
+        },
+        {
+            "source": "/meshtastic-resource/(.*)",
+            "destination": "https://api.meshtastic.org/resource/$1"
+        }
+    ]
+}
