@@ -72,7 +72,8 @@
               "buildTarget": "meshtastic-mx:build:production"
             },
             "development": {
-              "buildTarget": "meshtastic-mx:build:development"
+              "buildTarget": "meshtastic-mx:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

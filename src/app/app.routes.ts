@@ -14,6 +14,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/community/community.component').then(m => m.CommunityComponent)
   },
   {
+    path: 'network',
+    loadComponent: () => import('./pages/network/network.component').then(m => m.NetworkComponent)
+  },
+  {
     path: 'projects',
     loadComponent: () => import('./pages/projects/projects.component').then(m => m.ProjectsComponent)
   },

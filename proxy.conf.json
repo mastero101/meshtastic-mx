@@ -1,0 +1,26 @@
+{
+    "/mesh-api": {
+        "target": "https://my.meshview.world",
+        "secure": true,
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/mesh-api": "/mexico/api"
+        }
+    },
+    "/meshtastic-api": {
+        "target": "https://api.meshtastic.org",
+        "secure": true,
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/meshtastic-api": ""
+        }
+    },
+    "/meshtastic-resource": {
+        "target": "https://api.meshtastic.org/resource",
+        "secure": true,
+        "changeOrigin": true,
+        "pathRewrite": {
+            "^/meshtastic-resource": ""
+        }
+    }
+}

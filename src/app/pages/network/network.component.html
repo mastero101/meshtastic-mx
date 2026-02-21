@@ -1,0 +1,324 @@
+<div class="network-page">
+  <section class="hero">
+    <div class="container">
+      <h1>Estado de la Red</h1>
+      <p class="hero-subtitle">Visualización en tiempo real de la infraestructura Meshtastic en México</p>
+      
+      <header class="network-header">
+        <div class="header-main">
+          <div class="title-section">
+            <h1>Nodos Activos</h1>
+            <div class="fw-badge" *ngIf="latestFirmware">
+              <i class="fas fa-microchip"></i> 
+              <span>v{{ latestFirmware }}</span>
+            </div>
+          </div>
+          
+          <div class="header-actions">
+            <span class="update-time" [title]="formatDate(lastUpdated)">
+              <i class="far fa-clock"></i> {{ lastUpdated | date:'HH:mm:ss' }}
+            </span>
+            <button class="btn-refresh" (click)="loadData()" [disabled]="loadingNodes || loadingPackets" title="Refrescar datos">
+              <i class="fas fa-sync-alt" [class.fa-spin]="loadingNodes || loadingPackets"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="header-nav">
+          <div class="network-tabs">
+            <button class="tab-btn" [class.active]="activeTab === 'nodes'" (click)="setTab('nodes')">
+              <i class="fas fa-tower-broadcast"></i> <span>Nodos</span>
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'messages'" (click)="setTab('messages')">
+              <i class="fas fa-comments"></i> <span>Mensajes</span>
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'map'" (click)="setTab('map')">
+              <i class="fas fa-map-location-dot"></i> <span>Mapa</span>
+            </button>
+          </div>
+
+          <div class="search-container" *ngIf="activeTab !== 'map'">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar por nombre, ID o modelo..." aria-label="Buscar">
+          </div>
+        </div>
+      </header>
+    </div>
+  </section>
+
+  <div class="container">
+    <!-- Map View -->
+    <div class="tab-content no-padding" *ngIf="activeTab === 'map'">
+      <div class="loading-spinner" *ngIf="loadingMap">
+        <div class="spinner"></div>
+        <p>Cargando mapa de nodos...</p>
+      </div>
+      <div id="main-map" class="full-map" [class.hidden]="loadingMap"></div>
+    </div>
+
+    <!-- Nodes View -->
+    <div class="tab-content" *ngIf="activeTab === 'nodes'">
+      <div class="loading-spinner" *ngIf="loadingNodes">
+        <div class="spinner"></div>
+        <p>Cargando nodos...</p>
+      </div>
+
+      <div class="nodes-grid" *ngIf="!loadingNodes">
+        <div class="node-card" *ngFor="let node of filteredNodes; let i = index" 
+             [style.animation-delay]="i * 0.05 + 's'"
+             (click)="viewNodeDetails(node)">
+          <div class="node-status" [class.online]="true"></div>
+          
+          <div class="node-device-img" *ngIf="getNodeImage(node.hw_model)">
+            <img [src]="getNodeImage(node.hw_model)" [alt]="node.hw_model">
+          </div>
+
+          <div class="node-header">
+            <h3>{{ node.long_name || 'Nodo sin nombre' }}</h3>
+            <div class="node-tags">
+              <span class="node-id">!{{ node.id }}</span>
+              <span class="node-role" *ngIf="node.role">{{ node.role }}</span>
+            </div>
+          </div>
+          
+          <div class="node-body">
+            <div class="item">
+              <span class="label">Modelo</span>
+              <span class="value">{{ node.hw_model }}</span>
+            </div>
+            <div class="item">
+              <span class="label">Canal</span>
+              <span class="value">{{ node.channel }}</span>
+            </div>
+            <div class="item">
+              <span class="label">Visto</span>
+              <span class="value">{{ getTimeAgo(node.last_seen_us) }}</span>
+            </div>
+            <div class="item" *ngIf="node.last_lat">
+              <span class="label">Ubicación</span>
+              <span class="value">📍 {{ (node.last_lat / 10000000).toFixed(4) }}, {{ (node.last_long! / 10000000).toFixed(4) }}</span>
+            </div>
+          </div>
+          
+          <div class="node-footer">
+            <span class="view-details">Ver detalles <i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="no-data" *ngIf="!loadingNodes && filteredNodes.length === 0">
+        <p>No se encontraron nodos que coincidan con la búsqueda.</p>
+      </div>
+
+      <div class="pagination-controls" *ngIf="!loadingNodes && !searchTerm">
+        <button (click)="changePage('nodes', -1)" [disabled]="pageNodes === 1">
+          <i class="fas fa-arrow-left"></i> Anterior
+        </button>
+        <span class="page-info">Página {{ pageNodes }}</span>
+        <button (click)="changePage('nodes', 1)" [disabled]="nodes.length < pageSize">
+          Siguiente <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages View -->
+    <div class="tab-content" *ngIf="activeTab === 'messages'">
+      <div class="loading-spinner" *ngIf="loadingPackets">
+        <div class="spinner"></div>
+        <p>Cargando mensajes...</p>
+      </div>
+
+      <div class="messages-list" *ngIf="!loadingPackets">
+        <div class="message-card" *ngFor="let packet of filteredPackets">
+          <div class="message-header">
+            <span class="sender">{{ packet.from_long_name || 'Nodo Desconocido' }}</span>
+            <span class="time">{{ formatDate(packet.timestamp) }}</span>
+          </div>
+          <div class="message-body">
+            <p>{{ packet.text }}</p>
+          </div>
+          <div class="message-footer">
+            <span class="topic">#{{ packet.topic }}</span>
+            <span class="channel">{{ packet.channel }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-data" *ngIf="!loadingPackets && filteredPackets.length === 0">
+        <p>No se encontraron mensajes que coincidan con la búsqueda.</p>
+      </div>
+
+      <div class="pagination-controls" *ngIf="!loadingPackets && !searchTerm">
+        <button (click)="changePage('messages', -1)" [disabled]="pageMessages === 1">
+          <i class="fas fa-arrow-left"></i> Anterior
+        </button>
+        <span class="page-info">Página {{ pageMessages }}</span>
+        <button (click)="changePage('messages', 1)" [disabled]="packets.length < pageSize">
+          Siguiente <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Node Details Modal -->
+  <div class="modal-overlay" [class.active]="selectedNode" (click)="closeDetails()">
+    <div class="modal-content" (click)="$event.stopPropagation()" *ngIf="selectedNode">
+      <button class="close-button" (click)="closeDetails()" aria-label="Cerrar">&times;</button>
+      
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-device-img" *ngIf="getNodeImage(selectedNode.hw_model)">
+            <img [src]="getNodeImage(selectedNode.hw_model)" [alt]="selectedNode.hw_model">
+          </div>
+          <div class="modal-titles">
+            <h2>{{ selectedNode.long_name }}</h2>
+            <div class="node-meta">
+              <span class="node-id">!{{ selectedNode.id }} ({{ selectedNode.node_id }})</span>
+              <span class="node-role" *ngIf="selectedNode.role">{{ selectedNode.role }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <!-- New Metrics Summary Grid -->
+        <div class="metrics-summary-grid" *ngIf="latestMetrics">
+          <div class="m-stat battery" [title]="latestMetrics.voltage + 'V'">
+            <div class="m-stat-icon">
+              <i class="fas" 
+                 [class.fa-battery-full]="(latestMetrics.battery_level || 0) >= 90"
+                 [class.fa-battery-three-quarters]="(latestMetrics.battery_level || 0) < 90 && (latestMetrics.battery_level || 0) >= 60"
+                 [class.fa-battery-half]="(latestMetrics.battery_level || 0) < 60 && (latestMetrics.battery_level || 0) >= 30"
+                 [class.fa-battery-quarter]="(latestMetrics.battery_level || 0) < 30 && (latestMetrics.battery_level || 0) >= 10"
+                 [class.fa-battery-empty]="(latestMetrics.battery_level || 0) < 10"></i>
+            </div>
+            <div class="m-stat-info">
+              <span class="m-label">Batería</span>
+              <span class="m-value">{{ latestMetrics.battery_level }}%</span>
+            </div>
+            <div class="m-stat-progress">
+              <div class="m-bar" [style.width.%]="latestMetrics.battery_level"
+                   [style.background-color]="(latestMetrics.battery_level || 0) < 20 ? 'red' : ((latestMetrics.battery_level || 0) < 50 ? 'orange' : '#006847')"></div>
+            </div>
+          </div>
+
+          <div class="m-stat voltage" *ngIf="latestMetrics.voltage">
+            <div class="m-stat-icon"><i class="fas fa-bolt"></i></div>
+            <div class="m-stat-info">
+              <span class="m-label">Voltaje</span>
+              <span class="m-value">{{ latestMetrics.voltage.toFixed(2) }}V</span>
+            </div>
+          </div>
+
+          <div class="m-stat signal" *ngIf="latestMetrics.rx_rssi">
+            <div class="m-stat-icon"><i class="fas fa-signal"></i></div>
+            <div class="m-stat-info">
+              <span class="m-label">Señal (RSSI)</span>
+              <span class="m-value">{{ latestMetrics.rx_rssi }} dBm</span>
+            </div>
+          </div>
+
+          <div class="m-stat noise" *ngIf="latestMetrics.rx_snr">
+            <div class="m-stat-icon"><i class="fas fa-wave-square"></i></div>
+            <div class="m-stat-info">
+              <span class="m-label">Calidad (SNR)</span>
+              <span class="m-value">{{ latestMetrics.rx_snr }} dB</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="details-grid">
+          <div class="detail-section info">
+            <h3><i class="fas fa-info-circle"></i> Información General</h3>
+            <div class="info-list">
+              <div class="info-item">
+                <span class="label">Hardware</span>
+                <span class="value">{{ selectedNode.hw_model }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Firmware</span>
+                <span class="value">
+                  {{ selectedNode.firmware || 'Desconocido' }}
+                  <span class="update-tag" *ngIf="latestFirmware && selectedNode.firmware && latestFirmware.indexOf(selectedNode.firmware) === -1">
+                    Actualización disp.
+                  </span>
+                </span>
+              </div>
+              <div class="info-item">
+                <span class="label">Canal</span>
+                <span class="value">{{ selectedNode.channel }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Primera vez visto</span>
+                <span class="value">{{ getTimeAgo(selectedNode.first_seen_us) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="label">Última actividad</span>
+                <span class="value">{{ getTimeAgo(selectedNode.last_seen_us) }}</span>
+              </div>
+            </div>
+
+            <!-- Map box -->
+            <div class="map-box" *ngIf="selectedNode.last_lat">
+              <div class="map-placeholder">
+                <i class="fas fa-map-marked-alt"></i>
+                <div class="coords">
+                  <span>{{ (selectedNode.last_lat / 10000000).toFixed(6) }}</span>
+                  <span>{{ (selectedNode.last_long! / 10000000).toFixed(6) }}</span>
+                </div>
+              </div>
+              <a [href]="'https://www.google.com/maps?q=' + (selectedNode.last_lat / 10000000) + ',' + (selectedNode.last_long! / 10000000)" 
+                 target="_blank" class="btn-map">
+                <i class="fas fa-external-link-alt"></i> Google Maps
+              </a>
+            </div>
+          </div>
+
+          <div class="detail-section map-column" *ngIf="selectedNode.last_lat">
+            <h3><i class="fas fa-location-dot"></i> Ubicación</h3>
+            <div class="map-container">
+              <iframe 
+                width="100%" 
+                height="300" 
+                frameborder="0" 
+                style="border:0; border-radius: 16px; box-shadow: var(--card-shadow);" 
+                [src]="'https://maps.google.com/maps?q=' + (selectedNode.last_lat / 10000000) + ',' + (selectedNode.last_long! / 10000000) + '&t=&z=13&ie=UTF8&iwloc=&output=embed' | safeUrl" 
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+
+          <!-- Telemetry -->
+          <div class="detail-section telemetry" [class.full-width]="!selectedNode.last_lat" *ngIf="nodeTelemetry.length > 0">
+            <h3><i class="fas fa-chart-line"></i> Telemetría</h3>
+            <div class="telemetry-grid">
+              <div class="telemetry-item" *ngFor="let tel of nodeTelemetry.slice(0, 4)">
+                <span class="time">{{ formatDate(tel.timestamp) }}</span>
+                <pre class="payload-preview">{{ tel.payload.substring(0, 100) }}...</pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-section messages full-width">
+            <h3><i class="fas fa-envelope"></i> Historial de Mensajes</h3>
+            <div class="loading-spinner mini" *ngIf="loadingDetails">
+              <div class="spinner"></div>
+            </div>
+            <div class="node-messages" *ngIf="!loadingDetails">
+              <div class="mini-message-card" *ngFor="let msg of nodePackets">
+                <div class="msg-header">
+                  <span class="time">{{ formatDate(msg.timestamp) }}</span>
+                  <span class="topic">#{{ msg.topic }}</span>
+                </div>
+                <p class="msg-text">{{ msg.text }}</p>
+              </div>
+              <div class="no-messages" *ngIf="nodePackets.length === 0">
+                <p>No se encontraron mensajes recientes.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
