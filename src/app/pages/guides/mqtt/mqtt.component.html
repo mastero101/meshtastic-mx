@@ -1,130 +1,69 @@
-<div class="guide-detail glass-card">
-  <span class="guide-badge"><span class="badge-icon">📶</span> MQTT</span>
-  <div class="guide-detail-icon">📶</div>
-  <h2>MQTT — Guia Rapida</h2>
-  <div class="guide-divider"><span class="divider-icon">🔗</span></div>
-  <h4 class="guide-detail-subtitle"><em>Pasos recomendados para configurar MQTT en un dispositivo de Meshtastic.</em></h4>
-  <hr />
+<article class="guide">
+  <header class="guide__header">
+    <span class="guide__badge"><i class="fa-solid fa-plug" aria-hidden="true"></i> MQTT</span>
+    <span class="icon-tile icon-tile--lg guide__icon" aria-hidden="true"><i class="fa-solid fa-cloud-arrow-up"></i></span>
+    <h2>MQTT — Guía rápida</h2>
+    <p class="guide__lead">Pasos recomendados para configurar MQTT en un dispositivo de Meshtastic.</p>
+  </header>
 
-  <ol class="guide-steps">
-    <li>
-      <strong>Configurar MQTT</strong>
-      <ul>
-        <li>
-          <span class="list-icon">✅</span>
-          <div class="list-content">
-            <b>MQTT:</b> <em>Enabled</em>
-          </div>
-        </li>
-        <li>
-          <span class="list-icon">🔁</span>
-          <div class="list-content">
-            <b>MapReport:</b> <em>Enabled</em>
-          </div>
-        </li>
-        <li>
-          <span class="list-icon">⚠️</span>
-          <div class="list-content">
-            <b>MapReport (Consentimiento):</b> <em>Enabled</em>
-          </div>
-        </li>
-        <li>
-          <span class="list-icon">🕑​</span>
-          <div class="list-content">
-            <b>MapReport - Intervalo:</b> <em>6 Horas+</em>
-          </div>
-        </li>
-        <li>
-          <span class="list-icon">📍</span>
-          <div class="list-content">
-            <b>MapReport - Ubicacion:</b> <em>2.9 km+</em>
-          </div>
-        </li>
-        <li>
-          <span class="list-icon">📨</span>
-          <div class="list-content">
-            <b>Root Topic:</b> <em>msh/MX</em>
-          </div>
-        </li>
-        <li>
-          <span class="list-icon">📡</span>
-          <div class="list-content">
-            <b>MQTT client Proxy:</b> <em>Habilitar</em>
-          </div>
-        </li>
-        <li>
-          <span class="list-icon">💻</span>
-          <div class="list-content">
-            <b>Servidor:</b> <em>Default</em>
-          </div>
-        </li>
-      </ul>
+  <ol class="steps">
+    <li class="step">
+      <span class="step__number" aria-hidden="true">1</span>
+      <div class="step__content">
+        <h3>Configurar MQTT</h3>
+        <dl class="settings">
+          <div><dt><i class="fa-solid fa-power-off" aria-hidden="true"></i> MQTT</dt><dd>Enabled</dd></div>
+          <div><dt><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i> MapReport</dt><dd>Enabled</dd></div>
+          <div><dt><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> MapReport (Consentimiento)</dt><dd>Enabled</dd></div>
+          <div><dt><i class="fa-solid fa-clock" aria-hidden="true"></i> MapReport - Intervalo</dt><dd>6 Horas+</dd></div>
+          <div><dt><i class="fa-solid fa-location-dot" aria-hidden="true"></i> MapReport - Ubicación</dt><dd>2.9 km+</dd></div>
+          <div><dt><i class="fa-solid fa-hashtag" aria-hidden="true"></i> Root Topic</dt><dd>msh/MX</dd></div>
+          <div><dt><i class="fa-solid fa-tower-broadcast" aria-hidden="true"></i> MQTT client Proxy</dt><dd>Habilitar</dd></div>
+          <div><dt><i class="fa-solid fa-server" aria-hidden="true"></i> Servidor</dt><dd>Default</dd></div>
+        </dl>
+      </div>
     </li>
 
-    <li>
-      <strong>Configurar LoRa</strong>
-      <ul>
-        <li>
-          <span class="list-icon">🔀</span>
-          <div class="list-content">
-            <b>Ok to MQTT:</b> <em>Enabled</em>
-          </div>
-        </li>
-      </ul>
+    <li class="step">
+      <span class="step__number" aria-hidden="true">2</span>
+      <div class="step__content">
+        <h3>Configurar LoRa</h3>
+        <dl class="settings">
+          <div><dt><i class="fa-solid fa-arrow-right-arrow-left" aria-hidden="true"></i> Ok to MQTT</dt><dd>Enabled</dd></div>
+        </dl>
+      </div>
     </li>
 
-    <li>
-      <strong>Configurar Canales</strong>
-      <p class="step-description">Escoger el canal que quieres que se comunique con MQTT y habilitar ambas opciones.</p>
-      <ul>
-        <li>
-          <span class="list-icon">⬆️</span>
-          <div class="list-content">
-            <b>Uplink:</b> <em>Enabled</em>
-          </div>
-        </li>
-        <li>
-          <span class="list-icon">⬇️</span>
-          <div class="list-content">
-            <b>Downlink:</b> <em>Enabled</em>
-          </div>
-        </li>
-      </ul>
+    <li class="step">
+      <span class="step__number" aria-hidden="true">3</span>
+      <div class="step__content">
+        <h3>Configurar canales</h3>
+        <p>Escoger el canal que quieres que se comunique con MQTT y habilitar ambas opciones.</p>
+        <dl class="settings">
+          <div><dt><i class="fa-solid fa-upload" aria-hidden="true"></i> Uplink</dt><dd>Enabled</dd></div>
+          <div><dt><i class="fa-solid fa-download" aria-hidden="true"></i> Downlink</dt><dd>Enabled</dd></div>
+        </dl>
+      </div>
     </li>
 
-    <li>
-      <strong>Configurar Posición</strong>
-      <ul>
-        <li>
-          <span class="list-icon">🧭</span>
-          <div class="list-content">
-            <b>Smart Position:</b> <em>Disabled</em>
-          </div>
-        </li>
-        <li>
-          <span class="list-icon">📍</span>
-          <div class="list-content">
-            <b>Device GPS:</b> <em>Habilitado</em>
-          </div>
-        </li>
-        <li>
-          <span class="list-icon">⏱️</span>
-          <div class="list-content">
-            <b>Update interval:</b> <em>12 hrs</em>
-          </div>
-        </li>
-        <li>
-          <span class="list-icon">🏔️</span>
-          <div class="list-content">
-            <b>Position Flags:</b> <em>Altitud</em>
-          </div>
-        </li>
-      </ul>
+    <li class="step">
+      <span class="step__number" aria-hidden="true">4</span>
+      <div class="step__content">
+        <h3>Configurar posición</h3>
+        <dl class="settings">
+          <div><dt><i class="fa-solid fa-compass" aria-hidden="true"></i> Smart Position</dt><dd>Disabled</dd></div>
+          <div><dt><i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i> Device GPS</dt><dd>Habilitado</dd></div>
+          <div><dt><i class="fa-solid fa-stopwatch" aria-hidden="true"></i> Update interval</dt><dd>12 hrs</dd></div>
+          <div><dt><i class="fa-solid fa-mountain" aria-hidden="true"></i> Position Flags</dt><dd>Altitud</dd></div>
+        </dl>
+      </div>
     </li>
   </ol>
 
-  <div class="guide-detail-cta pulse">
+  <footer class="guide__cta">
     <span>Referencias</span>
-    <a class="guide-btn" href="https://meshtastic.org/docs/configuration/module/mqtt/" target="_blank">Ver configuración oficial de MQTT</a>
-  </div>
-</div>
+    <a class="btn btn-primary" href="https://meshtastic.org/docs/configuration/module/mqtt/" target="_blank" rel="noopener">
+      Ver configuración oficial de MQTT <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+    </a>
+  </footer>
+</article>

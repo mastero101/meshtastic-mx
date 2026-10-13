@@ -1,0 +1,145 @@
+// Design tokens de Meshtastic México.
+// Paleta cerrada: los componentes usan estas variables, nunca colores hex sueltos.
+// Contrastes verificados (WCAG AA) contra --surface y --surface-2 en ambos temas.
+
+@mixin light-theme {
+  color-scheme: light;
+
+  --bg: #f6f8f7;
+  --surface: #ffffff;
+  --surface-2: #eef4f1;
+  --surface-3: #e3ebe7;
+  --surface-glass: rgba(255, 255, 255, 0.86);
+  --text: #16211c;
+  --text-muted: #4f5d56;
+  --text-subtle: #66736d;
+  --border: #d9e3de;
+  --border-strong: #c3d1ca;
+
+  --accent: #006847;
+  --accent-hover: #004d35;
+  --accent-soft: #e3f1ea;
+  --accent-contrast: #ffffff;
+  --btn-primary-bg: #006847;
+  --btn-primary-hover: #004d35;
+  --danger: #c20f23;
+  --danger-soft: #fdebed;
+  --warning: #8a5200;
+  --warning-soft: #fff4dc;
+  --warning-border: #f0b44c;
+
+  --status-online: #15803d;
+  --status-idle: #b45309;
+  --status-offline: #6b7872;
+
+  --hero-bg: #00402b;
+  --hero-bg-2: #005538;
+
+  --chart-line: #007a52;
+  --chart-area: rgba(0, 122, 82, 0.1);
+  --chart-grid: #e6ece9;
+
+  --shadow-sm: 0 1px 2px rgba(16, 33, 26, 0.06), 0 1px 3px rgba(16, 33, 26, 0.06);
+  --shadow-md: 0 4px 16px rgba(16, 33, 26, 0.08);
+  --shadow-lg: 0 16px 40px rgba(16, 33, 26, 0.12);
+
+  --skeleton-base: #e7eeea;
+  --skeleton-shine: #f4f8f6;
+}
+
+@mixin dark-theme {
+  color-scheme: dark;
+
+  --bg: #0d1311;
+  --surface: #141c19;
+  --surface-2: #19231f;
+  --surface-3: #213029;
+  --surface-glass: rgba(20, 28, 25, 0.86);
+  --text: #e5eeea;
+  --text-muted: #a9b8b1;
+  --text-subtle: #8a9993;
+  --border: #273530;
+  --border-strong: #34463e;
+
+  --accent: #4cc493;
+  --accent-hover: #6fd6aa;
+  --accent-soft: rgba(76, 196, 147, 0.14);
+  --accent-contrast: #062117;
+  --btn-primary-bg: #12825a;
+  --btn-primary-hover: #179468;
+  --danger: #ff6b7b;
+  --danger-soft: rgba(255, 107, 123, 0.12);
+  --warning: #f5b84a;
+  --warning-soft: rgba(245, 184, 74, 0.12);
+  --warning-border: #8a6420;
+
+  --status-online: #4ade80;
+  --status-idle: #fbbf24;
+  --status-offline: #8a9993;
+
+  --hero-bg: #062a1d;
+  --hero-bg-2: #0a3a28;
+
+  --chart-line: #34a97b;
+  --chart-area: rgba(52, 169, 123, 0.12);
+  --chart-grid: #24312c;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.45);
+
+  --skeleton-base: #1d2824;
+  --skeleton-shine: #26332e;
+}
+
+:root {
+  // Colores de marca: iguales en ambos temas.
+  --brand-green: #006847;
+  --brand-green-dark: #004d35;
+  --brand-red: #ce1126;
+  --brand-white: #ffffff;
+  --hero-text: #ffffff;
+  --hero-muted: #d4e3dc;
+
+  // Tipografía (escala fija, títulos fluidos con clamp)
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.25rem;
+  --fs-2xl: clamp(1.375rem, 1.1rem + 1vw, 1.75rem);
+  --fs-3xl: clamp(1.75rem, 1.3rem + 1.8vw, 2.5rem);
+  --fs-display: clamp(2.25rem, 1.5rem + 3vw, 3.5rem);
+
+  // Espaciado (múltiplos de 4px)
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --header-h: 68px;
+  --container: 1200px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  @include light-theme;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include dark-theme;
+  }
+}
+
+:root[data-theme='dark'] {
+  @include dark-theme;
+}

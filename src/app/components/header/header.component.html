@@ -1,49 +1,51 @@
 <header class="header" [class.scrolled]="isScrolled">
-  <div class="container">
-    <div class="logo">
-      <a routerLink="/" class="logo-link" (click)="isLogoClicked = true" (mouseenter)="isLogoHovered = true" (mouseleave)="isLogoHovered = false">
-        <h1>
-          <span class="logo-text">Meshtastic <span class="mexico-text">México</span></span>
-          <svg class="mexico-flag" [class.hover]="isLogoHovered" [class.clicked]="isLogoClicked" 
-               viewBox="0 0 60 40" width="30" height="20">
-            <rect width="60" height="40" fill="#006341" class="flag-green"/>
-            <rect x="20" width="20" height="40" fill="#FFFFFF" class="flag-white"/>
-            <rect x="40" width="20" height="40" fill="#CE1126" class="flag-red"/>
-            <path d="M30,20 L35,25 L30,30 L25,25 Z" fill="#F9D71C" stroke="#000" stroke-width="0.5" class="flag-shield"/>
-          </svg>
-        </h1>
-      </a>
-    </div>
-    
-    <nav class="nav" [class.mobile-open]="isMobileMenuOpen">
-      <div class="mobile-nav-header">
-        <span class="mobile-logo">Meshtastic <span>MX</span></span>
+  <div class="container header__inner">
+    <a routerLink="/" class="logo" (click)="closeMobileMenu()" aria-label="Meshtastic México, ir al inicio">
+      <span class="logo__text">Meshtastic <span class="logo__mx">México</span></span>
+      <app-mx-flag class="logo__flag" [width]="28" />
+    </a>
+
+    <nav id="main-nav" class="nav" [class.mobile-open]="isMobileMenuOpen" aria-label="Principal">
+      <div class="nav__mobile-head">
+        <span class="logo__text">Meshtastic <span class="logo__mx">MX</span></span>
       </div>
-      
-      <ul class="nav-list">
-        <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMobileMenu()"><i class="fas fa-home"></i> Inicio</a></li>
-        <li><a routerLink="/about" routerLinkActive="active" (click)="closeMobileMenu()"><i class="fas fa-info-circle"></i> Acerca de</a></li>
-        <li><a routerLink="/community" routerLinkActive="active" (click)="closeMobileMenu()"><i class="fas fa-users"></i> Comunidad</a></li>
-        <li><a routerLink="/guides" routerLinkActive="active" (click)="closeMobileMenu()"><i class="fas fa-book"></i> Guías</a></li>
-        <li><a routerLink="/network" routerLinkActive="active" (click)="closeMobileMenu()"><i class="fas fa-network-wired"></i> Red</a></li>
-        <li><a routerLink="/projects" routerLinkActive="active" (click)="closeMobileMenu()"><i class="fas fa-project-diagram"></i> Proyectos</a></li>
+
+      <ul class="nav__list">
+        @for (link of links; track link.path) {
+          <li>
+            <a [routerLink]="link.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: link.exact }"
+               (click)="closeMobileMenu()">
+              <i class="fa-solid" [class]="link.icon" aria-hidden="true"></i> {{ link.label }}
+            </a>
+          </li>
+        }
       </ul>
 
-      <div class="mobile-nav-footer">
-        <p>Síguenos en redes</p>
-        <div class="mobile-socials">
-          <a href="https://github.com/mastero101/meshtastic-mx"><i class="fab fa-github"></i></a>
-          <a href="https://t.me/meshtastic_mexico"><i class="fab fa-telegram"></i></a>
+      <div class="nav__mobile-foot">
+        <p>Síguenos</p>
+        <div class="nav__socials">
+          <a href="https://github.com/mastero101/meshtastic-mx" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
+          <a href="https://t.me/meshtastic_mexico" target="_blank" rel="noopener" aria-label="Telegram"><i class="fa-brands fa-telegram" aria-hidden="true"></i></a>
         </div>
       </div>
     </nav>
 
-    <div class="nav-backdrop" [class.active]="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
+    <div class="header__actions">
+      <button type="button" class="icon-btn" (click)="themeService.toggle()"
+              [attr.aria-label]="themeService.theme() === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'"
+              [attr.title]="themeService.theme() === 'dark' ? 'Tema claro' : 'Tema oscuro'">
+        <i class="fa-solid" [class.fa-sun]="themeService.theme() === 'dark'" [class.fa-moon]="themeService.theme() !== 'dark'" aria-hidden="true"></i>
+      </button>
 
-    <div class="mobile-menu-toggle" [class.active]="isMobileMenuOpen" (click)="toggleMobileMenu()">
-      <span></span>
-      <span></span>
-      <span></span>
+      <button type="button" class="icon-btn menu-toggle" [class.active]="isMobileMenuOpen" (click)="toggleMobileMenu()"
+              aria-controls="main-nav" [attr.aria-expanded]="isMobileMenuOpen"
+              [attr.aria-label]="isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
   </div>
+
+  <div class="nav-backdrop" [class.active]="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
 </header>

@@ -1,33 +1,13 @@
 <div class="community-page">
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container">
-      <h1>Comunidad Meshtastic México</h1>
-      <p class="hero-subtitle">Conectando entusiastas, desarrolladores y usuarios en México</p>
-    </div>
-  </section>
+  <app-page-hero
+    title="Comunidad Meshtastic México"
+    subtitle="Conectando entusiastas, desarrolladores y usuarios en México"
+  />
 
-  <!-- Community Stats -->
+  <!-- Community Stats: cifras en vivo de la red -->
   <section class="stats">
     <div class="container">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-number">291+</div>
-          <div class="stat-label">Miembros</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">16</div>
-          <div class="stat-label">Ciudades</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">25+</div>
-          <div class="stat-label">Proyectos</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">1</div>
-          <div class="stat-label">Eventos</div>
-        </div>
-      </div>
+      <app-network-stats />
     </div>
   </section>
 
@@ -99,7 +79,7 @@
       <div class="events-grid">
         <div class="event-card" *ngFor="let event of events" (click)="openModal(event)">
           <div class="event-image" *ngIf="event.image">
-            <img [src]="event.image" [alt]="event.title">
+            <img [src]="event.image" [alt]="event.title" loading="lazy" decoding="async" width="800" height="450">
           </div>
           <div class="event-info">
             <div class="event-date">
@@ -108,7 +88,7 @@
             </div>
             <div class="event-content">
               <h3>{{event.title}}</h3>
-              <p class="event-location">📍 {{event.location}}</p>
+              <p class="event-location"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> {{event.location}}</p>
               <p class="event-description">
                 {{event.description}}
               </p>
@@ -128,7 +108,7 @@
       <!-- Modal -->
       <div class="modal-overlay" [class.active]="showModal" (click)="closeModal()">
         <div class="modal-content" (click)="$event.stopPropagation()">
-          <button class="close-button" (click)="closeModal()">&times;</button>
+          <button type="button" class="close-button" (click)="closeModal()" aria-label="Cerrar"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
           
           <div class="modal-header" *ngIf="selectedEvent">
             <h2>{{selectedEvent.title}}</h2>

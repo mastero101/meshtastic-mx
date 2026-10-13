@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PageHeroComponent } from '../../components/page-hero/page-hero.component';
+import { NetworkStatsComponent } from '../../components/network-stats/network-stats.component';
 
 interface Event {
   title: string;
@@ -15,7 +17,7 @@ interface Event {
 @Component({
   selector: 'app-community',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PageHeroComponent, NetworkStatsComponent],
   templateUrl: './community.component.html',
   styleUrl: './community.component.scss'
 })

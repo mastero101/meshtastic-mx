@@ -1,230 +1,451 @@
-.guides-section-bg {
-  background: #f4faf6;
-  padding: 2.5rem 0 3rem 0;
-  border-radius: 1.5rem;
-  box-shadow: 0 2px 16px 0 rgba(56,142,60,0.06);
-  min-height: 100vh;
-}
+// Estilos de la sección de guías y de todas las guías hijas.
+// Este componente no usa encapsulación: todo queda acotado bajo .guides-page.
 
-.guides-list {
-  margin: 0 auto;
-  max-width: 1200px;
-  h2 {
-    color: #388e3c;
-    margin-bottom: 0.5rem;
-    font-size: 2.4rem;
-    font-weight: 800;
-    letter-spacing: -1px;
+.guides-page {
+  padding-bottom: var(--space-8);
+
+  // ---------- Selector de guías ----------
+  .guides-list {
+    margin-top: calc(-1 * var(--space-6));
+    position: relative;
   }
-  .guides-subtitle {
-    color: #444;
-    margin-bottom: 2.2rem;
-    font-size: 1.15rem;
-  }
+
   .guides-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: var(--space-4);
   }
+
   .guide-card {
     display: flex;
     align-items: flex-start;
-    gap: 1.1rem;
-    background: #fff;
-    border: 2px solid #388e3c33;
-    border-radius: 1.2rem;
-    padding: 1.6rem 1.5rem 1.3rem 1.5rem;
-    box-shadow: 0 2px 12px 0 rgba(56,142,60,0.07);
+    gap: var(--space-4);
+    padding: var(--space-5);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    color: var(--text);
     text-decoration: none;
-    color: #222;
-    transition: box-shadow 0.22s, border-color 0.22s, background 0.22s, transform 0.18s;
-    position: relative;
-    overflow: hidden;
-    min-height: 140px;
-    cursor: pointer;
-    &:hover, &.active {
-      border-color: #c62828cc;
-      box-shadow: 0 8px 32px 0 rgba(198,40,40,0.13);
-      background: #f9f9f9;
-      transform: translateY(-6px) scale(1.025);
-      z-index: 2;
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease);
+
+    &:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-lg);
     }
-    .guide-icon {
-      font-size: 2.7rem;
-      color: #388e3c;
-      flex-shrink: 0;
-      margin-top: 0.1rem;
-      transition: color 0.2s;
-      .guide-card:hover & {
-        color: #c62828;
-      }
-    }
-    .guide-info {
-      h3 {
-        margin: 0 0 0.25rem 0;
-        font-size: 1.22rem;
-        color: #388e3c;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-      }
-      p {
-        margin: 0;
-        color: #444;
-        font-size: 1.01rem;
+
+    &.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-soft), var(--shadow-md);
+
+      .icon-tile {
+        background: var(--accent);
+        color: var(--accent-contrast);
       }
     }
   }
-}
 
-hr {
-  border: none;
-  border-top: 2.5px solid #388e3c33;
-  margin: 2.5rem 0 1.5rem 0;
-}
+  .guide-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
 
-.guide-detail {
-  background: #fff;
-  border: 2px solid #388e3c33;
-  border-radius: 1.2rem;
-  box-shadow: 0 2px 12px 0 rgba(56,142,60,0.07);
-  padding: 2rem 2.2rem 1.5rem 2.2rem;
-  margin: 2.5rem auto 0 auto;
-  max-width: 700px;
-  opacity: 0;
-  transform: translateY(30px);
-  animation: fadeInGuide 0.7s cubic-bezier(.4,1.4,.6,1) 0.1s forwards;
-  text-align: center;
-  .guide-detail-icon {
+  .guide-card__title {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .guide-card__text {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+
+  .guide-outlet {
+    scroll-margin-top: calc(var(--header-h) + var(--space-4));
+  }
+
+  // ---------- Guía ----------
+  .guide {
+    max-width: 820px;
+    margin: var(--space-7) auto 0;
+    padding: var(--space-7) var(--space-6) var(--space-6);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    animation: guide-in 0.4s var(--ease);
+
+    &--wide {
+      max-width: 1100px;
+    }
+
+    @media (max-width: 600px) {
+      padding: var(--space-6) var(--space-4) var(--space-5);
+    }
+
+    p {
+      color: var(--text-muted);
+    }
+
+    strong {
+      color: var(--text);
+    }
+  }
+
+  .guide__header {
+    position: relative;
+    text-align: center;
+    padding-bottom: var(--space-5);
+    margin-bottom: var(--space-5);
+    border-bottom: 1px solid var(--border);
+
+    h2 {
+      font-size: var(--fs-3xl);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: var(--space-2);
+    }
+  }
+
+  .guide__badge {
+    position: absolute;
+    top: calc(-1 * var(--space-7) - 14px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0.3rem 0.9rem;
+    border-radius: var(--radius-pill);
+    background: var(--brand-red);
+    color: #ffffff;
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 0 0 3px var(--surface);
+
+    @media (max-width: 600px) {
+      top: calc(-1 * var(--space-6) - 14px);
+    }
+  }
+
+  .guide__icon {
+    margin-bottom: var(--space-4);
+  }
+
+  .guide__lead {
+    font-size: var(--fs-lg);
+    color: var(--text-muted);
+  }
+
+  .guide__intro {
+    font-size: var(--fs-lg);
+    margin-bottom: var(--space-5);
+  }
+
+  .guide-section {
+    margin-top: var(--space-7);
+
+    > h3 {
+      font-size: var(--fs-2xl);
+      color: var(--text);
+      margin-bottom: var(--space-4);
+    }
+  }
+
+  // Lista de características con icono
+  .guide-features {
+    list-style: none;
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background: var(--surface-2);
+      border-radius: var(--radius-md);
+    }
+
+    h3 {
+      font-size: var(--fs-md);
+      color: var(--text);
+      margin-bottom: var(--space-1);
+    }
+
+    &--compact li {
+      align-items: center;
+    }
+  }
+
+  // Pasos numerados
+  .steps {
+    list-style: none;
+    display: grid;
+    gap: var(--space-4);
+    counter-reset: none;
+  }
+
+  .step {
+    display: flex;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    background: var(--surface-2);
+    border-radius: var(--radius-md);
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+      gap: var(--space-3);
+      padding: var(--space-4);
+    }
+  }
+
+  .step__number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--btn-primary-bg);
+    color: #ffffff;
+    font-weight: 800;
+  }
+
+  .step__content {
+    flex: 1;
+    min-width: 0;
+
+    h3 {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--fs-lg);
+      color: var(--text);
+      margin-bottom: var(--space-2);
+
+      i {
+        color: var(--accent);
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .step__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+
+  // Ajuste → valor (guía MQTT)
+  .settings {
+    display: grid;
+    gap: var(--space-1);
+    margin-top: var(--space-3);
+
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-1) var(--space-3);
+      padding: 0.55rem 0.8rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    dt {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-weight: 600;
+      color: var(--text);
+
+      i {
+        width: 18px;
+        text-align: center;
+        color: var(--accent);
+      }
+    }
+
+    dd {
+      padding: 0.1rem 0.6rem;
+      border-radius: var(--radius-pill);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: var(--fs-sm);
+      font-weight: 700;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+  }
+
+  // Avisos
+  .guide-alert {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    margin-bottom: var(--space-5);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+
+    > i {
+      margin-top: 0.2rem;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+
+    span {
+      display: block;
+      color: var(--text-muted);
+      font-size: var(--fs-sm);
+      margin-top: var(--space-1);
+    }
+
+    &--warning {
+      background: var(--warning-soft);
+      border-color: var(--warning-border);
+
+      > i {
+        color: var(--warning);
+      }
+    }
+  }
+
+  // Tarjetas de producto (guía de compra)
+  .product-grid {
+    list-style: none;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  }
+
+  .product {
+    display: flex;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+  }
+
+  .product__media {
+    width: 96px;
+    height: 96px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 70px;
-    height: 70px;
-    margin: 0 auto 1rem auto;
-    font-size: 2.7rem;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #e8f5e9 60%, #ffebee 100%);
-    box-shadow: 0 2px 8px 0 #388e3c22;
-    color: #388e3c;
-    border: 2.5px solid #388e3c33;
-    transition: box-shadow 0.22s, background 0.22s;
-  }
-  h2 {
-    color: #388e3c;
-    font-size: 2rem;
-    font-weight: 800;
-    margin-bottom: 0.3rem;
-    letter-spacing: -1px;
-    text-shadow: 0 2px 8px #388e3c22;
-  }
-  .guide-detail-subtitle {
-    color: #c62828;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 1.1rem;
-    letter-spacing: -0.5px;
-  }
-  hr {
-    border: none;
-    border-top: 2.5px solid #388e3c33;
-    margin: 1.2rem 0 1.5rem 0;
-  }
-  p {
-    color: #333;
-    font-size: 1.13rem;
-    line-height: 1.7;
-    margin-bottom: 1.2rem;
-  }
-  .guide-detail-list {
-    text-align: left;
-    margin: 0 auto 1.2rem auto;
-    max-width: 500px;
-    padding-left: 0;
-    list-style: none;
-    li {
-      background: #f4faf6;
-      border-radius: 0.7rem;
-      margin-bottom: 0.7rem;
-      padding: 0.7rem 1.1rem;
-      font-size: 1.08rem;
-      color: #388e3c;
-      font-weight: 500;
-      box-shadow: 0 1px 4px 0 #388e3c11;
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      b {
-        color: #c62828;
-        font-weight: 700;
-      }
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    // Fondo claro fijo: las ilustraciones oficiales están pensadas sobre blanco.
+    background: #f4f7f5;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
   }
-  .guide-detail-cta {
-    margin-top: 1.5rem;
-    background: linear-gradient(90deg, #e8f5e9 60%, #ffebee 100%);
-    color: #c62828;
-    font-weight: 700;
-    border-radius: 0.7rem;
-    padding: 0.9rem 1.2rem;
-    font-size: 1.08rem;
-    box-shadow: 0 1px 6px 0 #c6282811;
-    display: inline-block;
+
+  .product__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+
+    h4 {
+      font-size: var(--fs-md);
+      color: var(--text);
+    }
+
+    p {
+      font-size: var(--fs-sm);
+    }
+  }
+
+  .product__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: auto;
+  }
+
+  // Plataformas (guía de apps)
+  .platform-grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  }
+
+  .platform-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--surface-2);
+    border-radius: var(--radius-md);
+
+    p {
+      flex: 1;
+      font-size: var(--fs-sm);
+    }
+  }
+
+  .platform-card__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+
+    h3 {
+      font-size: var(--fs-lg);
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+  }
+
+  // Cierre de cada guía
+  .guide__cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-7);
+    padding: var(--space-5);
+    text-align: center;
+    border-radius: var(--radius-md);
+    background: var(--accent-soft);
+
+    > span {
+      font-weight: 700;
+      font-size: var(--fs-lg);
+      color: var(--text);
+    }
+
+    p {
+      font-size: var(--fs-sm);
+    }
   }
 }
 
-@keyframes fadeInGuide {
+@keyframes guide-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@media (max-width: 900px) {
-  .guides-list .guides-grid {
-    gap: 1.2rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .guides-section-bg {
-    padding: 1.2rem 0 1.5rem 0;
-    border-radius: 0.7rem;
-    min-height: 80vh;
-  }
-  .guides-list {
-    padding: 0 0.5rem;
-    h2 {
-      font-size: 1.5rem;
-    }
-    .guides-subtitle {
-      font-size: 1rem;
-    }
-  }
-  .guides-list .guides-grid {
-    grid-template-columns: 1fr;
-    gap: 0.7rem;
-  }
-  .guides-list .guide-card {
-    padding: 1.1rem 1rem 1rem 1rem;
-    min-height: 110px;
-  }
-  .guide-detail {
-    padding: 1.1rem 0.7rem 1rem 0.7rem;
-    h2 {
-      font-size: 1.2rem;
-    }
-    .guide-detail-icon {
-      width: 48px;
-      height: 48px;
-      font-size: 1.5rem;
-    }
-    .guide-detail-list li {
-      font-size: 0.98rem;
-      padding: 0.5rem 0.7rem;
-    }
-    .guide-detail-cta {
-      font-size: 0.98rem;
-      padding: 0.7rem 0.7rem;
-    }
   }
 }

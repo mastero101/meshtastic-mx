@@ -1,169 +1,166 @@
 <div class="about">
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container">
-      <h1>Acerca de Meshtastic México</h1>
-      <p class="hero-subtitle">Conectando comunidades a través de tecnología descentralizada</p>
-    </div>
-  </section>
+  <app-page-hero
+    title="Acerca de Meshtastic México"
+    subtitle="Conectando comunidades a través de tecnología descentralizada"
+  />
 
   <!-- What is Meshtastic -->
-  <section class="what-is">
+  <section class="section">
     <div class="container">
       <div class="content-grid">
         <div class="text-content">
           <h2>¿Qué es Meshtastic?</h2>
           <p>
-            Meshtastic es una plataforma de comunicación de código abierto que permite crear redes mesh 
-            descentralizadas usando dispositivos de bajo costo. Estas redes funcionan sin dependencia 
+            Meshtastic es una plataforma de comunicación de código abierto que permite crear redes mesh
+            descentralizadas usando dispositivos de bajo costo. Estas redes funcionan sin dependencia
             de infraestructura centralizada como torres celulares o internet.
           </p>
           <p>
-            Cada dispositivo actúa como un nodo en la red, retransmitiendo mensajes a otros dispositivos 
+            Cada dispositivo actúa como un nodo en la red, retransmitiendo mensajes a otros dispositivos
             cercanos, creando una red de comunicación resiliente y autónoma.
           </p>
-          <div class="features-list">
-            <div class="feature">
-              <span class="feature-icon">📡</span>
-              <div>
-                <h4>Comunicación Descentralizada</h4>
-                <p>No depende de infraestructura centralizada</p>
-              </div>
-            </div>
-            <div class="feature">
-              <span class="feature-icon">🔋</span>
-              <div>
-                <h4>Bajo Consumo</h4>
-                <p>Funciona con baterías por largos períodos</p>
-              </div>
-            </div>
-            <div class="feature">
-              <span class="feature-icon">🔒</span>
-              <div>
-                <h4>Encriptación</h4>
-                <p>Comunicación segura y privada</p>
-              </div>
-            </div>
-          </div>
+          <ul class="features-list">
+            @for (feature of features; track feature.title) {
+              <li class="feature">
+                <span class="icon-tile" aria-hidden="true"><i class="fa-solid" [class]="feature.icon"></i></span>
+                <div>
+                  <h3>{{ feature.title }}</h3>
+                  <p>{{ feature.text }}</p>
+                </div>
+              </li>
+            }
+          </ul>
         </div>
-        <div class="image-content">
-          <div class="mesh-diagram">
-            <div class="node node-1"></div>
-            <div class="node node-2"></div>
-            <div class="node node-3"></div>
-            <div class="node node-4"></div>
-            <div class="node node-5"></div>
-            <div class="connection conn-1"></div>
-            <div class="connection conn-2"></div>
-            <div class="connection conn-3"></div>
-            <div class="connection conn-4"></div>
-            <div class="connection conn-5"></div>
-          </div>
-        </div>
+
+        <figure class="mesh-diagram">
+          <svg viewBox="0 0 360 300" role="img" aria-labelledby="mesh-diagram-caption">
+            <!-- Enlaces de radio -->
+            <g class="mesh-diagram__links">
+              <line x1="60" y1="230" x2="140" y2="150" />
+              <line x1="140" y1="150" x2="230" y2="190" />
+              <line x1="140" y1="150" x2="190" y2="70" />
+              <line x1="190" y1="70" x2="300" y2="90" />
+              <line x1="230" y1="190" x2="300" y2="90" />
+            </g>
+            <!-- Ruta del mensaje -->
+            <path class="mesh-diagram__route" d="M60 230 L140 150 L190 70 L300 90" />
+            <g class="mesh-diagram__nodes">
+              <circle cx="140" cy="150" r="10" />
+              <circle cx="230" cy="190" r="10" />
+              <circle cx="190" cy="70" r="10" />
+            </g>
+            <circle class="mesh-diagram__origin" cx="60" cy="230" r="13" />
+            <circle class="mesh-diagram__target" cx="300" cy="90" r="13" />
+            <text x="60" y="264" text-anchor="middle">Tu nodo</text>
+            <text x="300" y="58" text-anchor="middle">Destino</text>
+            <text x="230" y="222" text-anchor="middle">Repetidor</text>
+          </svg>
+          <figcaption id="mesh-diagram-caption">
+            Un mensaje salta de nodo en nodo hasta llegar a su destino, sin pasar por internet ni torres celulares.
+          </figcaption>
+        </figure>
       </div>
     </div>
   </section>
 
   <!-- Our Mission -->
-  <section class="mission">
+  <section class="section section--tinted">
     <div class="container">
-      <h2>Nuestra Misión</h2>
-      <div class="mission-content">
-        <div class="mission-card">
-          <div class="mission-icon">🇲🇽</div>
+      <div class="section-header">
+        <h2>Nuestra Misión</h2>
+      </div>
+      <div class="card-grid">
+        <article class="card card--accent mission-card">
+          <span class="mission-icon"><app-mx-flag [width]="42" /></span>
           <h3>Promover en México</h3>
           <p>
-            Difundir y promover la tecnología Meshtastic en México, 
-            creando conciencia sobre sus beneficios para la comunicación 
+            Difundir y promover la tecnología Meshtastic en México,
+            creando conciencia sobre sus beneficios para la comunicación
             en situaciones de emergencia y desarrollo comunitario.
           </p>
-        </div>
-        <div class="mission-card">
-          <div class="mission-icon">🤝</div>
+        </article>
+        <article class="card card--accent mission-card">
+          <span class="icon-tile icon-tile--lg mission-icon" aria-hidden="true"><i class="fa-solid fa-handshake"></i></span>
           <h3>Construir Comunidad</h3>
           <p>
-            Crear una comunidad activa de desarrolladores, entusiastas 
-            y usuarios que colaboren en proyectos y compartan conocimientos 
+            Crear una comunidad activa de desarrolladores, entusiastas
+            y usuarios que colaboren en proyectos y compartan conocimientos
             sobre redes mesh.
           </p>
-        </div>
-        <div class="mission-card">
-          <div class="mission-icon">💡</div>
+        </article>
+        <article class="card card--accent mission-card">
+          <span class="icon-tile icon-tile--lg mission-icon" aria-hidden="true"><i class="fa-solid fa-lightbulb"></i></span>
           <h3>Desarrollar Soluciones</h3>
           <p>
-            Desarrollar aplicaciones y soluciones específicas para el 
-            contexto mexicano, adaptando la tecnología a las necesidades 
+            Desarrollar aplicaciones y soluciones específicas para el
+            contexto mexicano, adaptando la tecnología a las necesidades
             locales.
           </p>
-        </div>
+        </article>
       </div>
     </div>
   </section>
 
   <!-- Technology Stack -->
-  <section class="tech-stack">
+  <section class="section">
     <div class="container">
-      <h2>Tecnología</h2>
-      <div class="tech-grid">
-        <div class="tech-item">
-          <h4>Hardware</h4>
+      <div class="section-header">
+        <h2>Tecnología</h2>
+      </div>
+      <div class="card-grid card-grid--4">
+        <article class="card tech-item">
+          <h3><i class="fa-solid fa-microchip" aria-hidden="true"></i> Hardware</h3>
           <ul>
             <li>ESP32 / ESP8266 / nRF52840</li>
             <li>LoRa Radio Modules</li>
             <li>Dispositivos de bajo costo</li>
             <li>Baterías de larga duración</li>
           </ul>
-        </div>
-        <div class="tech-item">
-          <h4>Fabricantes</h4>
+        </article>
+        <article class="card tech-item">
+          <h3><i class="fa-solid fa-industry" aria-hidden="true"></i> Fabricantes</h3>
           <ul>
-            <li>
-              <a href="https://www.lilygo.cc/" target="_blank"><strong>LilyGO</strong></a> – Placas populares con LoRa y pantalla
-            </li>
-            <li>
-              <a href="https://heltec.org/" target="_blank"><strong>Heltec</strong></a> – Dispositivos compactos y robustos
-            </li>
-            <li>
-              <a href="https://www.seeedstudio.com/" target="_blank"><strong>Seeed Studio</strong></a> – Gran variedad de módulos LoRa
-            </li>
-            <li>
-              <a href="https://www.rakwireless.com/" target="_blank"><strong>RAK Wireless</strong></a> – Módulos profesionales y kits
-            </li>
+            <li><a href="https://www.lilygo.cc/" target="_blank" rel="noopener"><strong>LilyGO</strong></a> – Placas populares con LoRa y pantalla</li>
+            <li><a href="https://heltec.org/" target="_blank" rel="noopener"><strong>Heltec</strong></a> – Dispositivos compactos y robustos</li>
+            <li><a href="https://www.seeedstudio.com/" target="_blank" rel="noopener"><strong>Seeed Studio</strong></a> – Gran variedad de módulos LoRa</li>
+            <li><a href="https://www.rakwireless.com/" target="_blank" rel="noopener"><strong>RAK Wireless</strong></a> – Módulos profesionales y kits</li>
           </ul>
-        </div>
-        <div class="tech-item">
-          <h4>Software</h4>
+        </article>
+        <article class="card tech-item">
+          <h3><i class="fa-solid fa-code" aria-hidden="true"></i> Software</h3>
           <ul>
             <li>Firmware Meshtastic</li>
             <li>Aplicaciones móviles</li>
             <li>APIs de desarrollo</li>
             <li>Herramientas de configuración</li>
           </ul>
-        </div>
-        <div class="tech-item">
-          <h4>Protocolos</h4>
+        </article>
+        <article class="card tech-item">
+          <h3><i class="fa-solid fa-diagram-project" aria-hidden="true"></i> Protocolos</h3>
           <ul>
             <li>LoRa (Long Range)</li>
             <li>Mesh Networking</li>
             <li>Encriptación AES</li>
             <li>GPS integrado</li>
           </ul>
-        </div>
+        </article>
       </div>
     </div>
   </section>
 
   <!-- Join Us -->
-  <section class="join-us">
+  <section class="join-us page-hero">
     <div class="container">
       <h2>Únete a Nuestra Comunidad</h2>
       <p>
-        ¿Te interesa la tecnología de redes mesh? ¿Quieres contribuir al desarrollo 
+        ¿Te interesa la tecnología de redes mesh? ¿Quieres contribuir al desarrollo
         de soluciones de comunicación en México? ¡Únete a nosotros!
       </p>
       <div class="join-buttons">
-        <a routerLink="/community" class="btn btn-primary">Explorar Comunidad</a>
-        <a href="https://github.com/meshtastic" target="_blank" class="btn btn-secondary">Ver en GitHub</a>
+        <a routerLink="/community" class="btn btn-light">Explorar Comunidad</a>
+        <a href="https://github.com/meshtastic" target="_blank" rel="noopener" class="btn btn-outline-light">
+          <i class="fa-brands fa-github" aria-hidden="true"></i> Ver en GitHub
+        </a>
       </div>
     </div>
   </section>

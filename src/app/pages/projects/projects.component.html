@@ -1,11 +1,8 @@
 <div class="projects-page">
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container">
-      <h1>Proyectos de la Comunidad</h1>
-      <p class="hero-subtitle">Soluciones innovadoras desarrolladas por la comunidad mexicana</p>
-    </div>
-  </section>
+  <app-page-hero
+    title="Proyectos de la Comunidad"
+    subtitle="Soluciones innovadoras desarrolladas por la comunidad mexicana"
+  />
 
   <!-- Featured Projects -->
   <section class="featured-projects">
@@ -14,26 +11,29 @@
       <div class="featured-grid">
         <div class="featured-card">
           <div class="project-image">
-            <div class="image-placeholder">📡</div>
+            <i class="fa-solid fa-tower-broadcast" aria-hidden="true"></i>
           </div>
           <div class="project-content">
             <h3>Red Mesh CDMX</h3>
             <p class="project-category">Infraestructura</p>
             <p class="project-description">
-              Red Mesh CDMX es la red Meshtastic más activa de México, con alrededor de <strong>11 nodos</strong> que reportan ubicación en tiempo real mediante MQTT en la Ciudad de México. Permite comunicación descentralizada y resiliente en la capital, facilitando pruebas, colaboración y cobertura en distintas zonas urbanas.
+              Red Mesh CDMX es la red Meshtastic más activa de México, con nodos que reportan ubicación en tiempo real mediante MQTT en la Ciudad de México. Permite comunicación descentralizada y resiliente en la capital, facilitando pruebas, colaboración y cobertura en distintas zonas urbanas.
             </p>
-            <div class="project-stats">
-              <span>6 nodos en CDMX</span>
-              <span>19 nodos nacionales</span>
-              <span>Activo</span>
+            <div class="project-tags">
+              <span class="chip chip--accent">
+                @if (nationalNodes() !== null) {
+                  {{ nationalNodes() }} nodos registrados en México
+                } @else {
+                  Nodos en todo México
+                }
+              </span>
+              <span class="chip chip--accent">Activo</span>
             </div>
-            <div style="width: 100%; margin: 1.5rem 0;">
-              <iframe 
-                src="https://meshmap.net/" 
-                width="100%" 
-                height="400" 
-                style="border:0; border-radius: 12px;" 
-                allowfullscreen="" 
+            <div class="project-map">
+              <iframe
+                src="https://meshmap.net/"
+                title="Mapa de nodos Meshtastic (meshmap.net)"
+                allowfullscreen=""
                 loading="lazy">
               </iframe>
             </div>
@@ -45,7 +45,7 @@
         </div>
         <div class="featured-card">
           <div class="project-image">
-            <div class="image-placeholder">🌾</div>
+            <i class="fa-solid fa-wheat-awn" aria-hidden="true"></i>
           </div>
           <div class="project-content">
             <h3>AgroMesh</h3>
@@ -54,10 +54,10 @@
               Sistema de monitoreo agrícola usando redes mesh para sensores de humedad, 
               temperatura y control de riego en zonas rurales sin conectividad.
             </p>
-            <div class="project-stats">
-              <span>20 sensores</span>
-              <span>3 granjas</span>
-              <span>En desarrollo</span>
+            <div class="project-tags">
+              <span class="chip chip--accent">20 sensores</span>
+              <span class="chip chip--accent">3 granjas</span>
+              <span class="chip chip--warning">En desarrollo</span>
             </div>
             <div class="project-links">
               <a href="#" class="btn btn-primary">Ver Proyecto</a>
@@ -244,7 +244,7 @@
 
           <!-- Success Message -->
           <div class="success-message" *ngIf="isSubmitted">
-            <div class="success-icon">✅</div>
+            <div class="success-icon"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></div>
             <h3>¡Proyecto Recibido!</h3>
             <p>Gracias por contribuir a la comunidad. Revisaremos tu proyecto y lo publicaremos pronto.</p>
             <button class="btn btn-secondary" (click)="isSubmitted = false">Enviar otro</button>
@@ -254,27 +254,11 @@
     </div>
   </section>
 
-  <!-- Project Stats -->
-  <section class="project-stats">
+  <!-- Cifras en vivo de la red -->
+  <section class="live-stats">
     <div class="container">
-      <div class="stats-grid">
-        <div class="stat-item">
-          <div class="stat-number">25+</div>
-          <div class="stat-label">Proyectos Activos</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">150+</div>
-          <div class="stat-label">Nodos Desplegados</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">8</div>
-          <div class="stat-label">Estados</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">50+</div>
-          <div class="stat-label">Contribuidores</div>
-        </div>
-      </div>
+      <h2>La red en números</h2>
+      <app-network-stats />
     </div>
   </section>
 </div>

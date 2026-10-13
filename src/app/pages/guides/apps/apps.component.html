@@ -1,57 +1,60 @@
-<div class="guide-detail glass-card">
-  <span class="guide-badge badge-apps"><span class="badge-icon">📱</span> Apps</span>
-  <div class="guide-detail-icon animate-bounce">📱</div>
-  <h2>Aplicaciones móviles y cómo usarlas</h2>
-  <div class="guide-divider"><span class="divider-icon">🔗</span></div>
-  <h4 class="guide-detail-subtitle"><em>Conecta tu nodo y explora todas las funciones</em></h4>
-  <hr />
-  <div class="apps-container">
+<article class="guide">
+  <header class="guide__header">
+    <span class="guide__badge"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Apps</span>
+    <span class="icon-tile icon-tile--lg guide__icon" aria-hidden="true"><i class="fa-solid fa-mobile-screen"></i></span>
+    <h2>Aplicaciones móviles y cómo usarlas</h2>
+    <p class="guide__lead">Conecta tu nodo y explora todas las funciones</p>
+  </header>
+
+  <div class="platform-grid">
     <div class="platform-card">
-      <div class="platform-header">
-        <span class="platform-icon">📲</span>
-        <div class="platform-info">
-          <strong>Android</strong>
-          <span class="platform-tag">Recomendado</span>
+      <div class="platform-card__head">
+        <span class="icon-tile" aria-hidden="true"><i class="fa-brands fa-android"></i></span>
+        <div>
+          <h3>Android</h3>
+          <span class="chip chip--accent">Recomendado</span>
         </div>
       </div>
-      <p class="platform-desc">La forma más completa de gestionar tus nodos, enviar mensajes y ver el mapa de la red.</p>
-      <a class="guide-btn" href="https://play.google.com/store/apps/details?id=com.geeksville.mesh&hl=es_MX" target="_blank">
-        <i class="fab fa-android"></i> Descargar Google Play
+      <p>La forma más completa de gestionar tus nodos, enviar mensajes y ver el mapa de la red.</p>
+      <a class="btn btn-primary btn--block" href="https://play.google.com/store/apps/details?id=com.geeksville.mesh&hl=es_MX" target="_blank" rel="noopener">
+        <i class="fa-brands fa-google-play" aria-hidden="true"></i> Descargar en Google Play
       </a>
     </div>
 
     <div class="platform-card">
-      <div class="platform-header">
-        <span class="platform-icon">🍏</span>
-        <div class="platform-info">
-          <strong>iOS / Apple</strong>
-          <span class="platform-tag">Oficial</span>
+      <div class="platform-card__head">
+        <span class="icon-tile" aria-hidden="true"><i class="fa-brands fa-apple"></i></span>
+        <div>
+          <h3>iOS / Apple</h3>
+          <span class="chip">Oficial</span>
         </div>
       </div>
-      <p class="platform-desc">Aplicación oficial para iPhone y iPad. Conexión rápida vía Bluetooth y gestión de canales.</p>
-      <a class="guide-btn" href="https://apps.apple.com/in/app/meshtastic/id1586432531" target="_blank" style="background: #1a1a1a;">
-        <i class="fab fa-apple"></i> Descargar App Store
+      <p>Aplicación oficial para iPhone y iPad. Conexión rápida vía Bluetooth y gestión de canales.</p>
+      <a class="btn btn-primary btn--block" href="https://apps.apple.com/in/app/meshtastic/id1586432531" target="_blank" rel="noopener">
+        <i class="fa-brands fa-apple" aria-hidden="true"></i> Descargar en App Store
       </a>
     </div>
 
     <div class="platform-card">
-      <div class="platform-header">
-        <span class="platform-icon">💻</span>
-        <div class="platform-info">
-          <strong>Web & Desktop</strong>
-          <span class="platform-tag">Avanzado</span>
+      <div class="platform-card__head">
+        <span class="icon-tile" aria-hidden="true"><i class="fa-solid fa-laptop-code"></i></span>
+        <div>
+          <h3>Web &amp; Desktop</h3>
+          <span class="chip">Avanzado</span>
         </div>
       </div>
-      <p class="platform-desc">Configura tu nodo directamente desde el navegador o utiliza la línea de comandos (CLI).</p>
-      <a class="guide-btn" href="https://meshtastic.org/docs/software/" target="_blank" style="background: #2e7d32;">
-        <i class="fas fa-code"></i> Ver Documentación
+      <p>Configura tu nodo directamente desde el navegador o utiliza la línea de comandos (CLI).</p>
+      <a class="btn btn-secondary btn--block" href="https://meshtastic.org/docs/software/" target="_blank" rel="noopener">
+        <i class="fa-solid fa-code" aria-hidden="true"></i> Ver documentación
       </a>
     </div>
   </div>
 
-  <div class="guide-detail-cta pulse">
+  <footer class="guide__cta">
     <span>¿Necesitas ayuda técnica?</span>
-    <p style="font-size: 0.9rem; margin-bottom: 1rem; color: #666;">Consulta la documentación oficial para configuraciones avanzadas.</p>
-    <a class="guide-btn" href="https://meshtastic.org/docs/software/" target="_blank">Guía de Software</a>
-  </div>
-</div>
+    <p>Consulta la documentación oficial para configuraciones avanzadas.</p>
+    <a class="btn btn-primary" href="https://meshtastic.org/docs/software/" target="_blank" rel="noopener">
+      Guía de software <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+    </a>
+  </footer>
+</article>

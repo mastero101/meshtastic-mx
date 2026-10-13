@@ -4,7 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-que-es-meshtastic',
   imports: [],
   templateUrl: './que-es-meshtastic.component.html',
-  styleUrl: './que-es-meshtastic.component.scss'
 })
 export class QueEsMeshtasticComponent {
 
