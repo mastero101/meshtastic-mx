@@ -1,414 +1,340 @@
-import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component, DestroyRef, PLATFORM_ID, computed, effect, inject, signal, untracked } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { interval, map } from 'rxjs';
 import { MeshService } from '../../services/mesh.service';
-import { MeshNode, MeshPacket, TelemetryMetrics } from '../../models/mesh.model';
-import { Subscription, interval } from 'rxjs';
+import { MeshNode, MeshPacket, MeshStats } from '../../models/mesh.model';
+import { PageHeroComponent } from '../../components/page-hero/page-hero.component';
+import { StatTileComponent } from '../../components/stat-tile/stat-tile.component';
+import { DailyBarsComponent } from '../../components/daily-bars/daily-bars.component';
+import { MeshMapComponent } from '../../components/mesh-map/mesh-map.component';
+import { ImgFallbackDirective } from '../../directives/img-fallback.directive';
+import {
+    ACTIVITY_OPTIONS,
+    ActivityFilter,
+    NO_ROLE,
+    STATUS_LABELS,
+    displayId,
+    matchesActivity,
+    nodeCoords,
+    nodeHex,
+    nodeIdToHex,
+    nodeStatus,
+    roleLabel,
+    timeAgo,
+    timeAgoMs,
+} from '../../utils/node-utils';
+
+type Tab = 'nodos' | 'mensajes' | 'mapa';
+
+const TABS: { value: Tab; label: string; icon: string }[] = [
+    { value: 'nodos', label: 'Nodos', icon: 'fa-tower-broadcast' },
+    { value: 'mensajes', label: 'Mensajes', icon: 'fa-comments' },
+    { value: 'mapa', label: 'Mapa', icon: 'fa-map-location-dot' },
+];
+
+const NODES_PER_PAGE = 48;
+const MESSAGES_PER_PAGE = 50;
+const REFRESH_MS = 60_000;
+
+const messageTime = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
 @Component({
     selector: 'app-network',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [RouterLink, PageHeroComponent, StatTileComponent, DailyBarsComponent, MeshMapComponent, ImgFallbackDirective],
     templateUrl: './network.component.html',
     styleUrl: './network.component.scss'
 })
-export class NetworkComponent implements OnInit, OnDestroy {
-    nodes: MeshNode[] = [];
-    packets: MeshPacket[] = [];
-    allNodes: MeshNode[] = [];
-    loadingNodes = true;
-    loadingPackets = true;
-    loadingMap = false;
-    activeTab: 'nodes' | 'messages' | 'map' = 'nodes';
-    lastUpdated: Date = new Date();
-    latestFirmware: string = '';
+export class NetworkComponent {
+    private readonly mesh = inject(MeshService);
+    private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
+    private readonly destroyRef = inject(DestroyRef);
+    private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-    // Pagination & Search
-    pageNodes = 1;
-    pageMessages = 1;
-    pageSize = 50;
-    searchTerm = '';
+    protected readonly tabs = TABS;
+    protected readonly activityOptions = ACTIVITY_OPTIONS;
+    protected readonly skeletons = Array.from({ length: 9 }, (_, i) => i);
 
-    // Map
-    private map?: any;
-    private detailMap?: any;
-    private markers: any[] = [];
-    private detailMarkers: any[] = [];
+    // ---------- Estado de la URL ----------
+    private readonly params = toSignal(this.route.queryParamMap, { requireSync: true });
 
-    // Detailed View
-    selectedNode: MeshNode | null = null;
-    nodePackets: MeshPacket[] = [];
-    nodeTelemetry: MeshPacket[] = [];
-    latestMetrics: TelemetryMetrics | null = null;
-    loadingDetails = false;
+    protected readonly tab = computed<Tab>(() => {
+        const value = this.params().get('tab');
+        return value === 'mensajes' || value === 'mapa' ? value : 'nodos';
+    });
+    protected readonly query = computed(() => this.params().get('q') ?? '');
+    protected readonly role = computed(() => this.params().get('rol') ?? '');
+    protected readonly activity = computed<ActivityFilter>(() => {
+        const value = this.params().get('actividad') as ActivityFilter | null;
+        return ACTIVITY_OPTIONS.some((o) => o.value === value) ? value! : 'todos';
+    });
+    private readonly requestedPage = computed(() => Math.max(1, Number(this.params().get('pagina')) || 1));
 
-    private refreshSubscription?: Subscription;
+    protected readonly hasFilters = computed(() => !!this.query() || !!this.role() || this.activity() !== 'todos');
+    /** Cambia cuando cambian los filtros: el mapa se re-encuadra sólo entonces. */
+    protected readonly filterKey = computed(() => `${this.query()}|${this.role()}|${this.activity()}`);
 
-    constructor(
-        private meshService: MeshService,
-        @Inject(PLATFORM_ID) private platformId: Object
-    ) { }
+    // ---------- Datos ----------
+    protected readonly nodes = signal<MeshNode[]>([]);
+    protected readonly loadingNodes = signal(true);
+    protected readonly nodesError = signal(false);
+    protected readonly refreshing = signal(false);
+    protected readonly lastUpdated = signal<number | null>(null);
+    protected readonly latestFirmware = signal('');
+    protected readonly stats = signal<MeshStats | null>(null);
 
-    ngOnInit(): void {
-        if (isPlatformBrowser(this.platformId)) {
-            this.loadData();
+    protected readonly packets = signal<MeshPacket[]>([]);
+    protected readonly loadingPackets = signal(false);
+    protected readonly packetsError = signal(false);
+    protected readonly pageMessages = signal(1);
+    private packetsLoadedPage = 0;
 
-            // Auto-refresh every 60 seconds
-            this.refreshSubscription = interval(60000).subscribe(() => {
-                this.loadData();
+    /** Reloj para "hace X min" y el estado en línea; avanza cada 15 s. */
+    protected readonly now = signal(Date.now());
+
+    // ---------- Derivados ----------
+    protected readonly summary = computed(() => {
+        const now = this.now();
+        let online = 0;
+        let active24h = 0;
+        let withPosition = 0;
+        for (const node of this.nodes()) {
+            const status = nodeStatus(node.last_seen_us, now);
+            if (status === 'online') online++;
+            if (status !== 'offline') active24h++;
+            if (nodeCoords(node)) withPosition++;
+        }
+        return { total: this.nodes().length, online, active24h, withPosition };
+    });
+
+    protected readonly roleOptions = computed(() => {
+        const counts = new Map<string, number>();
+        for (const node of this.nodes()) {
+            const key = node.role || NO_ROLE;
+            counts.set(key, (counts.get(key) ?? 0) + 1);
+        }
+        return [...counts.entries()]
+            .sort((a, b) => b[1] - a[1])
+            .map(([value, count]) => ({ value, count, label: value === NO_ROLE ? 'Sin rol' : roleLabel(value) }));
+    });
+
+    protected readonly filteredNodes = computed(() => {
+        const term = this.query().trim().toLowerCase();
+        const role = this.role();
+        const activity = this.activity();
+        const now = this.now();
+
+        return this.nodes()
+            .filter((node) => {
+                if (role && (node.role || NO_ROLE) !== role) return false;
+                if (!matchesActivity(node.last_seen_us, activity, now)) return false;
+                if (!term) return true;
+                return (
+                    node.long_name?.toLowerCase().includes(term) ||
+                    node.short_name?.toLowerCase().includes(term) ||
+                    node.id.toLowerCase().includes(term) ||
+                    node.hw_model?.toLowerCase().includes(term)
+                );
+            })
+            .sort((a, b) => b.last_seen_us - a.last_seen_us);
+    });
+
+    protected readonly totalPages = computed(() => Math.max(1, Math.ceil(this.filteredNodes().length / NODES_PER_PAGE)));
+    protected readonly page = computed(() => Math.min(this.requestedPage(), this.totalPages()));
+
+    /** Tarjetas de la página actual, con todo lo que muestra la plantilla ya calculado. */
+    protected readonly pageNodes = computed(() => {
+        const now = this.now();
+        const start = (this.page() - 1) * NODES_PER_PAGE;
+        return this.filteredNodes()
+            .slice(start, start + NODES_PER_PAGE)
+            .map((node) => {
+                const status = nodeStatus(node.last_seen_us, now);
+                return {
+                    node,
+                    hex: nodeHex(node),
+                    displayId: displayId(node.id),
+                    status,
+                    statusLabel: STATUS_LABELS[status],
+                    seen: timeAgo(node.last_seen_us, now),
+                    role: node.role ? roleLabel(node.role) : '',
+                    image: this.mesh.getDeviceImage(node.hw_model),
+                    hasPosition: !!nodeCoords(node),
+                };
             });
-        }
-    }
+    });
 
-    ngOnDestroy(): void {
-        if (this.refreshSubscription) {
-            this.refreshSubscription.unsubscribe();
-        }
-    }
+    protected readonly mappableCount = computed(() => this.filteredNodes().filter((n) => nodeCoords(n)).length);
 
-    loadData(): void {
-        this.fetchNodes();
-        this.fetchPackets();
-        this.meshService.getLatestFirmware().subscribe(v => this.latestFirmware = v);
-    }
-
-    fetchNodes(): void {
-        this.loadingNodes = true;
-        this.meshService.getNodes(this.pageSize, this.pageNodes).subscribe({
-            next: (response) => {
-                this.nodes = response.nodes;
-                this.loadingNodes = false;
-                this.lastUpdated = new Date();
-            },
-            error: (err) => {
-                console.error('Error fetching nodes:', err);
-                this.loadingNodes = false;
-            }
-        });
-    }
-
-    fetchPackets(): void {
-        this.loadingPackets = true;
-        this.meshService.getPackets('mexico', this.pageSize, this.pageMessages).subscribe({
-            next: (packets) => {
-                this.packets = packets;
-                this.loadingPackets = false;
-            },
-            error: (err) => {
-                console.error('Error fetching packets:', err);
-                this.loadingPackets = false;
-            }
-        });
-    }
-
-    changePage(tab: 'nodes' | 'messages', delta: number): void {
-        if (tab === 'nodes') {
-            this.pageNodes = Math.max(1, this.pageNodes + delta);
-            this.fetchNodes();
-        } else {
-            this.pageMessages = Math.max(1, this.pageMessages + delta);
-            this.fetchPackets();
-        }
-        // Scroll to top of content
-        window.scrollTo({ top: 400, behavior: 'smooth' });
-    }
-
-    get filteredNodes(): MeshNode[] {
-        if (!this.searchTerm) return this.nodes;
-        const term = this.searchTerm.toLowerCase();
-        return this.nodes.filter(n =>
-            n.long_name?.toLowerCase().includes(term) ||
-            n.id.toLowerCase().includes(term) ||
-            n.hw_model?.toLowerCase().includes(term)
+    protected readonly filteredPackets = computed(() => {
+        const term = this.query().trim().toLowerCase();
+        const list = this.packets().map((p) => ({
+            ...p,
+            senderHex: nodeIdToHex(p.from_node_id),
+            when: p.timestamp ? messageTime.format(p.timestamp) : '',
+        }));
+        if (!term) return list;
+        return list.filter(
+            (p) =>
+                p.from_long_name?.toLowerCase().includes(term) ||
+                p.text?.toLowerCase().includes(term) ||
+                p.senderHex.includes(term.replace(/^!/, '')),
         );
-    }
+    });
 
-    get filteredPackets(): MeshPacket[] {
-        if (!this.searchTerm) return this.packets;
-        const term = this.searchTerm.toLowerCase();
-        return this.packets.filter(p =>
-            p.from_long_name?.toLowerCase().includes(term) ||
-            (p.text && p.text.toLowerCase().includes(term)) ||
-            p.from_node_id?.toString().includes(term)
-        );
-    }
+    protected readonly updatedAgo = computed(() => {
+        const updated = this.lastUpdated();
+        return updated ? timeAgoMs(this.now() - updated) : '';
+    });
 
-    viewNodeDetails(node: MeshNode): void {
-        this.selectedNode = node;
-        this.loadingDetails = true;
-        this.nodePackets = [];
-        this.nodeTelemetry = [];
+    private searchTimer?: ReturnType<typeof setTimeout>;
 
-        // Fetch node specific packets
-        this.meshService.getNodePackets(node.node_id).subscribe({
-            next: (packets) => {
-                this.nodePackets = packets;
-            },
-            error: (err) => console.error('Error fetching node packets:', err)
-        });
+    constructor() {
+        if (!this.isBrowser) return;
 
-        // Fetch telemetry
-        this.meshService.getNodeTelemetry(node.node_id).subscribe({
-            next: (packets) => {
-                this.nodeTelemetry = packets;
-                if (packets.length > 0) {
-                    this.latestMetrics = this.parseTelemetry(packets[0].payload);
-                }
-                this.loadingDetails = false;
-                // Initialize small map for details
-                if (node.last_lat) {
-                    setTimeout(() => this.initDetailMap(node), 300);
-                }
-            },
-            error: (err) => {
-                console.error('Error fetching node telemetry:', err);
-                this.loadingDetails = false;
-            }
-        });
-    }
+        this.mesh.loadHardwareImages();
+        this.loadNodes();
+        this.mesh.getLatestFirmware()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((v) => this.latestFirmware.set(v));
+        this.mesh.getStats()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({ next: (s) => this.stats.set(s), error: () => this.stats.set(null) });
 
-    private parseTelemetry(payload: string): TelemetryMetrics | null {
-        if (!payload) return null;
+        interval(15_000)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(() => this.now.set(Date.now()));
 
-        const metrics: TelemetryMetrics = {};
+        // Refresco en segundo plano: sin spinner y sólo con la pestaña visible.
+        interval(REFRESH_MS)
+            .pipe(
+                map(() => document.visibilityState === 'visible'),
+                takeUntilDestroyed(this.destroyRef),
+            )
+            .subscribe((visible) => {
+                if (visible) this.refresh();
+            });
 
-        // Extract metrics using regex
-        const batteryMatch = payload.match(/battery_level:\s*(\d+)/);
-        const voltageMatch = payload.match(/voltage:\s*([\d.]+)/);
-        const channelUtilMatch = payload.match(/channel_utilization:\s*([\d.]+)/);
-        const airUtilTxMatch = payload.match(/air_util_tx:\s*([\d.]+)/);
-        const uptimeMatch = payload.match(/uptime_seconds:\s*(\d+)/);
-        const snrMatch = payload.match(/rx_snr:\s*(-?[\d.]+)/);
-        const rssiMatch = payload.match(/rx_rssi:\s*(-?[\d.]+)/);
-
-        if (batteryMatch) metrics.battery_level = parseInt(batteryMatch[1]);
-        if (voltageMatch) metrics.voltage = parseFloat(voltageMatch[1]);
-        if (channelUtilMatch) metrics.channel_utilization = parseFloat(channelUtilMatch[1]);
-        if (airUtilTxMatch) metrics.air_util_tx = parseFloat(airUtilTxMatch[1]);
-        if (uptimeMatch) metrics.uptime_seconds = parseInt(uptimeMatch[1]);
-        if (snrMatch) metrics.rx_snr = parseFloat(snrMatch[1]);
-        if (rssiMatch) metrics.rx_rssi = parseFloat(rssiMatch[1]);
-
-        return Object.keys(metrics).length > 0 ? metrics : null;
-    }
-
-    closeDetails(): void {
-        this.selectedNode = null;
-        this.nodePackets = [];
-        this.nodeTelemetry = [];
-        this.latestMetrics = null;
-        if (this.detailMap) {
-            this.detailMap.remove();
-            this.detailMap = undefined;
-        }
-    }
-
-    setTab(tab: 'nodes' | 'messages' | 'map'): void {
-        this.activeTab = tab;
-        if (tab === 'map') {
-            this.fetchNodesForMap();
-        }
-    }
-
-    fetchNodesForMap(): void {
-        if (!isPlatformBrowser(this.platformId)) return;
-
-        this.loadingMap = true;
-        this.meshService.getAllNodes().subscribe({
-            next: (nodes) => {
-                if (nodes && Array.isArray(nodes)) {
-                    this.allNodes = nodes.filter(n => n && n.last_lat && n.last_long);
-                    console.log(`Found ${this.allNodes.length} nodes with coordinates.`);
-                } else {
-                    this.allNodes = [];
-                }
-                this.loadingMap = false;
-                // Wait for the DOM to be fully ready and the 'hidden' class to be removed
-                setTimeout(() => this.initMap(), 500);
-            },
-            error: (err) => {
-                console.error('Error fetching nodes for map:', err);
-                this.loadingMap = false;
-            }
+        // Los mensajes se piden al abrir su pestaña.
+        effect(() => {
+            if (this.tab() !== 'mensajes') return;
+            const page = this.pageMessages();
+            untracked(() => {
+                if (this.packetsLoadedPage !== page) this.loadPackets(page);
+            });
         });
     }
 
-    async initMap() {
-        if (!isPlatformBrowser(this.platformId)) return;
+    // ---------- Acciones ----------
 
-        try {
-            const LeafletModule = await import('leaflet');
-            const L = (LeafletModule as any).default || LeafletModule;
-
-            const mapContainer = document.getElementById('main-map');
-            if (!mapContainer) {
-                console.warn('Map container "main-map" not found');
-                return;
-            }
-
-            if (this.map) {
-                this.map.off();
-                this.map.remove();
-                this.map = undefined;
-            }
-
-            this.map = L.map('main-map', {
-                zoomControl: true,
-                scrollWheelZoom: true,
-                fadeAnimation: true
-            }).setView([23.6345, -102.5528], 5);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 19,
-                crossOrigin: true
-            }).addTo(this.map);
-
-            this.updateMapMarkers(L);
-
-            // Multiple attempts to fix gray tiles in production
-            const resize = () => { if (this.map) this.map.invalidateSize(); };
-            setTimeout(resize, 100);
-            setTimeout(resize, 500);
-            setTimeout(resize, 1000);
-
-        } catch (error) {
-            console.error('CRITICAL: Error initializing main map:', error);
-        }
+    refresh(): void {
+        this.loadNodes(true);
+        if (this.tab() === 'mensajes') this.loadPackets(this.pageMessages(), true);
     }
 
-    async initDetailMap(node: MeshNode) {
-        if (!isPlatformBrowser(this.platformId) || !node.last_lat || !node.last_long) return;
-
-        try {
-            const LeafletModule = await import('leaflet');
-            const L = (LeafletModule as any).default || LeafletModule;
-
-            const mapId = `detail-map-${node.node_id}`;
-            const mapContainer = document.getElementById(mapId);
-            if (!mapContainer) {
-                console.warn(`Detail map container "${mapId}" not found`);
-                return;
-            }
-
-            if (this.detailMap) {
-                this.detailMap.off();
-                this.detailMap.remove();
-                this.detailMap = undefined;
-            }
-
-            const lat = (node.last_lat ?? 0) / 10000000;
-            const lng = (node.last_long ?? 0) / 10000000;
-
-            this.detailMap = L.map(mapId, {
-                zoomControl: true,
-                scrollWheelZoom: false,
-                dragging: true,
-                fadeAnimation: true
-            }).setView([lat, lng], 13);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 19,
-                crossOrigin: true
-            }).addTo(this.detailMap);
-
-            L.circleMarker([lat, lng], {
-                radius: 10,
-                fillColor: '#006847',
-                color: '#ffffff',
-                weight: 3,
-                opacity: 1,
-                fillOpacity: 0.9
-            }).addTo(this.detailMap);
-
-            const resize = () => { if (this.detailMap) this.detailMap.invalidateSize(); };
-            setTimeout(resize, 400);
-            setTimeout(resize, 1000);
-        } catch (error) {
-            console.error('CRITICAL: Error initializing detail map:', error);
-        }
+    setTab(tab: Tab): void {
+        this.updateParams({ tab: tab === 'nodos' ? null : tab, pagina: null });
     }
 
-    updateMapMarkers(L: any) {
-        if (!this.map) return;
-
-        // Clear existing markers
-        this.markers.forEach(m => m.remove());
-        this.markers = [];
-
-        this.allNodes.forEach(node => {
-            if (node.last_lat && node.last_long) {
-                // Use CircleMarker to avoid broken image issues with default Leaflet icons
-                const marker = L.circleMarker([node.last_lat / 10000000, node.last_long / 10000000], {
-                    radius: 8,
-                    fillColor: '#006847', // Mexican Green
-                    color: '#ffffff',
-                    weight: 2,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                })
-                    .bindPopup(`
-                    <div class="map-popup">
-                        <div class="popup-header">
-                            <strong>${node.long_name || node.id}</strong>
-                            <span class="popup-role">${node.role || ''}</span>
-                        </div>
-                        <div class="popup-body">
-                            <p>${node.hw_model}</p>
-                            <small>Visto: ${this.getTimeAgo(node.last_seen_us)}</small>
-                        </div>
-                        <button class="btn-popup-details" id="marker-${node.node_id}">Ver detalles completo</button>
-                    </div>
-                `, {
-                        closeButton: false,
-                        className: 'custom-popup'
-                    })
-                    .addTo(this.map);
-
-                // Open modal on marker click (alternative to popup button)
-                marker.on('popupopen', () => {
-                    document.getElementById(`marker-${node.node_id}`)?.addEventListener('click', () => {
-                        this.viewNodeDetails(node);
-                    });
-                });
-
-                this.markers.push(marker);
-            }
-        });
-
-        if (this.markers.length > 0) {
-            const group = L.featureGroup(this.markers);
-            this.map.fitBounds(group.getBounds().pad(0.1));
-        }
+    onSearch(event: Event): void {
+        const value = (event.target as HTMLInputElement).value;
+        clearTimeout(this.searchTimer);
+        this.searchTimer = setTimeout(() => this.updateParams({ q: value.trim() || null, pagina: null }, true), 250);
     }
 
-    formatDate(date?: Date): string {
-        if (!date) return '';
-        return date.toLocaleString('es-MX', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+    setRole(event: Event): void {
+        this.updateParams({ rol: (event.target as HTMLSelectElement).value || null, pagina: null });
+    }
+
+    setActivity(event: Event): void {
+        const value = (event.target as HTMLSelectElement).value;
+        this.updateParams({ actividad: value === 'todos' ? null : value, pagina: null });
+    }
+
+    clearFilters(): void {
+        this.updateParams({ q: null, rol: null, actividad: null, pagina: null });
+    }
+
+    goToPage(page: number): void {
+        this.updateParams({ pagina: page > 1 ? page : null });
+        document.getElementById('network-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    changeMessagesPage(delta: number): void {
+        this.pageMessages.update((p) => Math.max(1, p + delta));
+        document.getElementById('network-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ---------- Carga ----------
+
+    private loadNodes(silent = false): void {
+        // Con datos en pantalla, el refresco no los reemplaza por un spinner.
+        if (!silent || this.nodes().length === 0) this.loadingNodes.set(true);
+        this.refreshing.set(true);
+
+        this.mesh.getAllNodes(silent)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: (nodes) => {
+                    this.nodes.set(nodes);
+                    this.nodesError.set(false);
+                    this.lastUpdated.set(Date.now());
+                    this.now.set(Date.now());
+                },
+                error: (err) => {
+                    console.error('Error fetching nodes:', err);
+                    // Si ya había datos, se conservan; el error sólo se muestra sin datos.
+                    this.nodesError.set(this.nodes().length === 0);
+                    this.loadingNodes.set(false);
+                    this.refreshing.set(false);
+                },
+                complete: () => {
+                    this.loadingNodes.set(false);
+                    this.refreshing.set(false);
+                },
+            });
+    }
+
+    private loadPackets(page: number, silent = false): void {
+        if (!silent) this.loadingPackets.set(true);
+        this.packetsLoadedPage = page;
+
+        this.mesh.getPackets('mexico', MESSAGES_PER_PAGE, page)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: (packets) => {
+                    this.packets.set(packets);
+                    this.packetsError.set(false);
+                    this.loadingPackets.set(false);
+                },
+                error: (err) => {
+                    console.error('Error fetching packets:', err);
+                    this.packetsLoadedPage = 0;
+                    this.packetsError.set(this.packets().length === 0);
+                    this.loadingPackets.set(false);
+                },
+            });
+    }
+
+    retryPackets(): void {
+        this.loadPackets(this.pageMessages());
+    }
+
+    retryNodes(): void {
+        this.loadNodes();
+    }
+
+    private updateParams(params: Params, replaceUrl = false): void {
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: params,
+            queryParamsHandling: 'merge',
+            replaceUrl,
         });
     }
 
-    getNodeImage(hwModel: string): string {
-        if (!hwModel) return '';
-        // The API provides slugs like RAK4631, HELTEC_V3, etc.
-        return this.meshService.getDeviceImage(hwModel);
-    }
-
-    getTimeAgo(timestamp?: number): string {
-        if (!timestamp) return 'Desconocido';
-        const seconds = Math.floor((Date.now() - (timestamp / 1000)) / 1000);
-
-        if (seconds < 60) return 'Hace un momento';
-        const minutes = Math.floor(seconds / 60);
-        if (minutes < 60) return `Hace ${minutes} min`;
-        const hours = Math.floor(minutes / 60);
-        if (hours < 24) return `Hace ${hours} h`;
-        return `Hace ${Math.floor(hours / 24)} d`;
-    }
+    protected readonly messagesPerPage = MESSAGES_PER_PAGE;
 }

@@ -1,12 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, PLATFORM_ID, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpClient } from '@angular/common/http';
+import { PageHeroComponent } from '../../components/page-hero/page-hero.component';
+import { NetworkStatsComponent } from '../../components/network-stats/network-stats.component';
+import { MeshService } from '../../services/mesh.service';
 
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, PageHeroComponent, NetworkStatsComponent],
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.scss'
 })
@@ -14,6 +18,9 @@ export class ProjectsComponent {
   projectForm: FormGroup;
   isSubmitted = false;
   isSending = false;
+
+  /** Total de nodos de la red nacional, en vivo (null mientras carga o si falla). */
+  readonly nationalNodes = signal<string | null>(null);
 
   states: string[] = [
     'Aguascalientes', 'Baja California', 'Baja California Sur', 'Campeche', 'Chiapas',
@@ -34,6 +41,15 @@ export class ProjectsComponent {
       contactEmail: ['', [Validators.required, Validators.email]],
       projectLink: ['']
     });
+
+    if (isPlatformBrowser(inject(PLATFORM_ID))) {
+      inject(MeshService).getNodeTotals()
+        .pipe(takeUntilDestroyed(inject(DestroyRef)))
+        .subscribe({
+          next: (totals) => this.nationalNodes.set(totals.total.toLocaleString('es-MX')),
+          error: () => this.nationalNodes.set(null),
+        });
+    }
   }
 
   onSubmit() {

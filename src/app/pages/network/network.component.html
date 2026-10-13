@@ -1,329 +1,265 @@
 <div class="network-page">
-  <section class="hero">
-    <div class="container">
-      <h1>Estado de la Red</h1>
-      <p class="hero-subtitle">Visualización en tiempo real de la infraestructura Meshtastic en México</p>
-      
-      <header class="network-header">
-        <div class="header-main">
-          <div class="title-section">
-            <h1>Nodos Activos</h1>
-            <div class="fw-badge" *ngIf="latestFirmware">
-              <i class="fas fa-microchip"></i> 
-              <span>v{{ latestFirmware }}</span>
-            </div>
-          </div>
-          
-          <div class="header-actions">
-            <span class="update-time" [title]="formatDate(lastUpdated)">
-              <i class="far fa-clock"></i> {{ lastUpdated | date:'HH:mm:ss' }}
-            </span>
-            <button class="btn-refresh" (click)="loadData()" [disabled]="loadingNodes || loadingPackets" title="Refrescar datos">
-              <i class="fas fa-sync-alt" [class.fa-spin]="loadingNodes || loadingPackets"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="header-nav">
-          <div class="network-tabs">
-            <button class="tab-btn" [class.active]="activeTab === 'nodes'" (click)="setTab('nodes')">
-              <i class="fas fa-tower-broadcast"></i> <span>Nodos</span>
-            </button>
-            <button class="tab-btn" [class.active]="activeTab === 'messages'" (click)="setTab('messages')">
-              <i class="fas fa-comments"></i> <span>Mensajes</span>
-            </button>
-            <button class="tab-btn" [class.active]="activeTab === 'map'" (click)="setTab('map')">
-              <i class="fas fa-map-location-dot"></i> <span>Mapa</span>
-            </button>
-          </div>
-
-          <div class="search-container" *ngIf="activeTab !== 'map'">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" [(ngModel)]="searchTerm" placeholder="Buscar por nombre, ID o modelo..." aria-label="Buscar">
-          </div>
-        </div>
-      </header>
+  <app-page-hero
+    eyebrow="Meshtastic México"
+    title="Red en vivo"
+    subtitle="Nodos, mensajes y cobertura de la red Meshtastic en México, con datos de MeshView."
+  >
+    <div class="live-bar">
+      <span class="live-pill" aria-live="polite">
+        @if (lastUpdated()) {
+          <span class="live-dot" aria-hidden="true"></span> Actualizado {{ updatedAgo() }}
+        } @else {
+          <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i> Cargando datos…
+        }
+      </span>
+      <button type="button" class="btn btn-outline-light btn--sm" (click)="refresh()" [disabled]="refreshing()">
+        <i class="fa-solid fa-rotate" [class.fa-spin]="refreshing()" aria-hidden="true"></i> Actualizar
+      </button>
+      @if (latestFirmware()) {
+        <span class="live-pill">
+          <i class="fa-solid fa-microchip" aria-hidden="true"></i> Firmware estable {{ latestFirmware() }}
+        </span>
+      }
     </div>
-  </section>
+  </app-page-hero>
 
   <div class="container">
-    <!-- Map View -->
-    <div class="tab-content no-padding" *ngIf="activeTab === 'map'">
-      <div class="loading-spinner" *ngIf="loadingMap">
-        <div class="spinner"></div>
-        <p>Cargando mapa de nodos...</p>
-      </div>
-      <div id="main-map" class="full-map" [class.hidden]="loadingMap"></div>
-    </div>
+    <!-- Resumen -->
+    <section class="summary" aria-label="Resumen de la red">
+      <app-stat-tile label="Nodos registrados" icon="fa-tower-broadcast" hint="Todos los que han reportado"
+                     [value]="summary().total" [loading]="loadingNodes()" />
+      <app-stat-tile label="En línea" icon="fa-signal" hint="Vistos hace menos de 2 h"
+                     [value]="summary().online" [loading]="loadingNodes()" />
+      <app-stat-tile label="Activos 24 h" icon="fa-clock-rotate-left" hint="Vistos en el último día"
+                     [value]="summary().active24h" [loading]="loadingNodes()" />
+      <app-stat-tile label="Con ubicación" icon="fa-location-dot" hint="Aparecen en el mapa"
+                     [value]="summary().withPosition" [loading]="loadingNodes()" />
+      <app-stat-tile label="Paquetes" icon="fa-wave-square" hint="Últimos 7 días"
+                     [value]="stats()?.packets_total" [loading]="!stats()">
+        @if (stats()?.daily?.length) {
+          <app-daily-bars [days]="stats()!.daily" />
+        }
+      </app-stat-tile>
+    </section>
 
-    <!-- Nodes View -->
-    <div class="tab-content" *ngIf="activeTab === 'nodes'">
-      <div class="loading-spinner" *ngIf="loadingNodes">
-        <div class="spinner"></div>
-        <p>Cargando nodos...</p>
-      </div>
-
-      <div class="nodes-grid" *ngIf="!loadingNodes">
-        <div class="node-card" *ngFor="let node of filteredNodes; let i = index" 
-             [style.animation-delay]="i * 0.05 + 's'"
-             (click)="viewNodeDetails(node)">
-          <div class="node-status" [class.online]="true"></div>
-          
-          <div class="node-device-img" *ngIf="getNodeImage(node.hw_model)">
-            <img [src]="getNodeImage(node.hw_model)" [alt]="node.hw_model">
-          </div>
-
-          <div class="node-header">
-            <h3>{{ node.long_name || 'Nodo sin nombre' }}</h3>
-            <div class="node-tags">
-              <span class="node-id">!{{ node.id }}</span>
-              <span class="node-role" *ngIf="node.role">{{ node.role }}</span>
-            </div>
-          </div>
-          
-          <div class="node-body">
-            <div class="item">
-              <span class="label">Modelo</span>
-              <span class="value">{{ node.hw_model }}</span>
-            </div>
-            <div class="item">
-              <span class="label">Canal</span>
-              <span class="value">{{ node.channel }}</span>
-            </div>
-            <div class="item">
-              <span class="label">Visto</span>
-              <span class="value">{{ getTimeAgo(node.last_seen_us) }}</span>
-            </div>
-            <div class="item" *ngIf="node.last_lat">
-              <span class="label">Ubicación</span>
-              <span class="value">📍 {{ (node.last_lat / 10000000).toFixed(4) }}, {{ (node.last_long! / 10000000).toFixed(4) }}</span>
-            </div>
-          </div>
-          
-          <div class="node-footer">
-            <span class="view-details">Ver detalles <i class="fas fa-arrow-right"></i></span>
-          </div>
-        </div>
-      </div>
-      
-      <div class="no-data" *ngIf="!loadingNodes && filteredNodes.length === 0">
-        <p>No se encontraron nodos que coincidan con la búsqueda.</p>
+    <!-- Pestañas y filtros (todo se guarda en la URL) -->
+    <div class="toolbar" id="network-results">
+      <div class="tabs" role="tablist" aria-label="Vistas de la red">
+        @for (t of tabs; track t.value) {
+          <button type="button" role="tab" class="tab" [class.active]="tab() === t.value"
+                  [attr.aria-selected]="tab() === t.value" (click)="setTab(t.value)">
+            <i class="fa-solid" [class]="t.icon" aria-hidden="true"></i>
+            <span>{{ t.label }}</span>
+          </button>
+        }
       </div>
 
-      <div class="pagination-controls" *ngIf="!loadingNodes && !searchTerm">
-        <button (click)="changePage('nodes', -1)" [disabled]="pageNodes === 1">
-          <i class="fas fa-arrow-left"></i> Anterior
-        </button>
-        <span class="page-info">Página {{ pageNodes }}</span>
-        <button (click)="changePage('nodes', 1)" [disabled]="nodes.length < pageSize">
-          Siguiente <i class="fas fa-arrow-right"></i>
-        </button>
+      <div class="filters">
+        <label class="search">
+          <span class="visually-hidden">Buscar</span>
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input class="input" type="search" [value]="query()" (input)="onSearch($event)"
+                 [placeholder]="tab() === 'mensajes' ? 'Buscar texto o remitente…' : 'Buscar nombre, ID o modelo…'" />
+        </label>
+
+        @if (tab() !== 'mensajes') {
+          <label class="filter">
+            <span class="visually-hidden">Rol</span>
+            <select class="select" (change)="setRole($event)">
+              <option value="" [selected]="!role()">Todos los roles</option>
+              @for (r of roleOptions(); track r.value) {
+                <option [value]="r.value" [selected]="r.value === role()">{{ r.label }} ({{ r.count }})</option>
+              }
+            </select>
+          </label>
+          <label class="filter">
+            <span class="visually-hidden">Actividad</span>
+            <select class="select" (change)="setActivity($event)">
+              @for (a of activityOptions; track a.value) {
+                <option [value]="a.value" [selected]="a.value === activity()">{{ a.label }}</option>
+              }
+            </select>
+          </label>
+        }
+
+        @if (hasFilters()) {
+          <button type="button" class="btn btn-secondary btn--sm" (click)="clearFilters()">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i> Limpiar
+          </button>
+        }
       </div>
     </div>
 
-    <!-- Messages View -->
-    <div class="tab-content" *ngIf="activeTab === 'messages'">
-      <div class="loading-spinner" *ngIf="loadingPackets">
-        <div class="spinner"></div>
-        <p>Cargando mensajes...</p>
-      </div>
-
-      <div class="messages-list" *ngIf="!loadingPackets">
-        <div class="message-card" *ngFor="let packet of filteredPackets">
-          <div class="message-header">
-            <span class="sender">{{ packet.from_long_name || 'Nodo Desconocido' }}</span>
-            <span class="time">{{ formatDate(packet.timestamp) }}</span>
-          </div>
-          <div class="message-body">
-            <p>{{ packet.text }}</p>
-          </div>
-          <div class="message-footer">
-            <span class="topic">#{{ packet.topic }}</span>
-            <span class="channel">{{ packet.channel }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="no-data" *ngIf="!loadingPackets && filteredPackets.length === 0">
-        <p>No se encontraron mensajes que coincidan con la búsqueda.</p>
-      </div>
-
-      <div class="pagination-controls" *ngIf="!loadingPackets && !searchTerm">
-        <button (click)="changePage('messages', -1)" [disabled]="pageMessages === 1">
-          <i class="fas fa-arrow-left"></i> Anterior
-        </button>
-        <span class="page-info">Página {{ pageMessages }}</span>
-        <button (click)="changePage('messages', 1)" [disabled]="packets.length < pageSize">
-          Siguiente <i class="fas fa-arrow-right"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Node Details Modal -->
-  <div class="modal-overlay" [class.active]="selectedNode" (click)="closeDetails()">
-    <div class="modal-content" (click)="$event.stopPropagation()" *ngIf="selectedNode">
-      <button class="close-button" (click)="closeDetails()" aria-label="Cerrar">&times;</button>
-      
-      <div class="modal-header">
-        <div class="modal-title-group">
-          <div class="modal-device-img" *ngIf="getNodeImage(selectedNode.hw_model)">
-            <img [src]="getNodeImage(selectedNode.hw_model)" [alt]="selectedNode.hw_model">
-          </div>
-          <div class="modal-titles">
-            <h2>{{ selectedNode.long_name }}</h2>
-            <div class="node-meta">
-              <span class="node-id">!{{ selectedNode.id }} ({{ selectedNode.node_id }})</span>
-              <span class="node-role" *ngIf="selectedNode.role">{{ selectedNode.role }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-body">
-        <!-- New Metrics Summary Grid -->
-        <div class="metrics-summary-grid" *ngIf="latestMetrics">
-          <div class="m-stat battery" [title]="latestMetrics.voltage + 'V'">
-            <div class="m-stat-icon">
-              <i class="fas" 
-                 [class.fa-battery-full]="(latestMetrics.battery_level || 0) >= 90"
-                 [class.fa-battery-three-quarters]="(latestMetrics.battery_level || 0) < 90 && (latestMetrics.battery_level || 0) >= 60"
-                 [class.fa-battery-half]="(latestMetrics.battery_level || 0) < 60 && (latestMetrics.battery_level || 0) >= 30"
-                 [class.fa-battery-quarter]="(latestMetrics.battery_level || 0) < 30 && (latestMetrics.battery_level || 0) >= 10"
-                 [class.fa-battery-empty]="(latestMetrics.battery_level || 0) < 10"></i>
-            </div>
-            <div class="m-stat-info">
-              <span class="m-label">Batería</span>
-              <span class="m-value">{{ latestMetrics.battery_level }}%</span>
-            </div>
-            <div class="m-stat-progress">
-              <div class="m-bar" [style.width.%]="latestMetrics.battery_level"
-                   [style.background-color]="(latestMetrics.battery_level || 0) < 20 ? 'red' : ((latestMetrics.battery_level || 0) < 50 ? 'orange' : '#006847')"></div>
-            </div>
-          </div>
-
-          <div class="m-stat voltage" *ngIf="latestMetrics.voltage">
-            <div class="m-stat-icon"><i class="fas fa-bolt"></i></div>
-            <div class="m-stat-info">
-              <span class="m-label">Voltaje</span>
-              <span class="m-value">{{ latestMetrics.voltage.toFixed(2) }}V</span>
-            </div>
-          </div>
-
-          <div class="m-stat signal" *ngIf="latestMetrics.rx_rssi">
-            <div class="m-stat-icon"><i class="fas fa-signal"></i></div>
-            <div class="m-stat-info">
-              <span class="m-label">Señal (RSSI)</span>
-              <span class="m-value">{{ latestMetrics.rx_rssi }} dBm</span>
-            </div>
-          </div>
-
-          <div class="m-stat noise" *ngIf="latestMetrics.rx_snr">
-            <div class="m-stat-icon"><i class="fas fa-wave-square"></i></div>
-            <div class="m-stat-info">
-              <span class="m-label">Calidad (SNR)</span>
-              <span class="m-value">{{ latestMetrics.rx_snr }} dB</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="details-grid">
-          <div class="detail-section info">
-            <h3><i class="fas fa-info-circle"></i> Información General</h3>
-            <div class="info-list">
-              <div class="info-item">
-                <span class="label">Hardware</span>
-                <span class="value">{{ selectedNode.hw_model }}</span>
+    @switch (tab()) {
+      @case ('nodos') {
+        @if (loadingNodes()) {
+          <div class="nodes-grid" aria-hidden="true">
+            @for (s of skeletons; track s) {
+              <div class="node-card node-card--skeleton">
+                <span class="skeleton" style="width: 40%; height: 14px"></span>
+                <span class="skeleton" style="width: 75%; height: 22px; margin-top: 14px"></span>
+                <span class="skeleton" style="width: 50%; height: 14px; margin-top: 10px"></span>
+                <span class="skeleton" style="width: 100%; height: 56px; margin-top: 18px"></span>
               </div>
-              <div class="info-item">
-                <span class="label">Firmware</span>
-                <span class="value">
-                  {{ selectedNode.firmware || 'Desconocido' }}
-                  <span class="update-tag" *ngIf="latestFirmware && selectedNode.firmware && latestFirmware.indexOf(selectedNode.firmware) === -1">
-                    Actualización disp.
-                  </span>
-                </span>
-              </div>
-              <div class="info-item">
-                <span class="label">Canal</span>
-                <span class="value">{{ selectedNode.channel }}</span>
-              </div>
-              <div class="info-item">
-                <span class="label">Primera vez visto</span>
-                <span class="value">{{ getTimeAgo(selectedNode.first_seen_us) }}</span>
-              </div>
-              <div class="info-item">
-                <span class="label">Última actividad</span>
-                <span class="value">{{ getTimeAgo(selectedNode.last_seen_us) }}</span>
-              </div>
-            </div>
-
-            <!-- Map box -->
-            <div class="map-box" *ngIf="selectedNode.last_lat">
-              <div class="map-placeholder">
-                <i class="fas fa-map-marked-alt"></i>
-                <div class="coords">
-                  <span>{{ (selectedNode.last_lat / 10000000).toFixed(6) }}</span>
-                  <span>{{ (selectedNode.last_long! / 10000000).toFixed(6) }}</span>
-                </div>
-              </div>
-              <a [href]="'https://www.google.com/maps?q=' + (selectedNode.last_lat / 10000000) + ',' + (selectedNode.last_long! / 10000000)" 
-                 target="_blank" class="btn-map">
-                <i class="fas fa-external-link-alt"></i> Google Maps
-              </a>
-            </div>
+            }
           </div>
+          <p class="visually-hidden" role="status">Cargando nodos…</p>
+        } @else if (nodesError()) {
+          <div class="empty-state">
+            <i class="fa-solid fa-plug-circle-xmark" aria-hidden="true"></i>
+            <h3>No pudimos cargar los nodos</h3>
+            <p>La API de MeshView no respondió. Intenta de nuevo en unos segundos.</p>
+            <button type="button" class="btn btn-primary" (click)="retryNodes()">Reintentar</button>
+          </div>
+        } @else {
+          <p class="result-count" role="status">
+            {{ filteredNodes().length.toLocaleString('es-MX') }} de {{ nodes().length.toLocaleString('es-MX') }} nodos
+            @if (totalPages() > 1) { · página {{ page() }} de {{ totalPages() }} }
+          </p>
 
-          <div class="detail-section map-column" *ngIf="selectedNode.last_lat">
-            <h3><i class="fas fa-location-dot"></i> Ubicación</h3>
-            
-            <div class="map-container">
-              <div [id]="'detail-map-' + selectedNode.node_id" class="mini-map"></div>
-              
-              <div class="map-overlay-info">
-                <div class="coords">
-                  <span class="lat">{{ (selectedNode.last_lat / 10000000).toFixed(6) }}</span>
-                  <span class="lng">{{ (selectedNode.last_long! / 10000000).toFixed(6) }}</span>
-                </div>
-                <a [href]="'https://www.google.com/maps?q=' + (selectedNode.last_lat / 10000000) + ',' + (selectedNode.last_long! / 10000000)" 
-                   target="_blank" class="btn-external-map" title="Abrir en Google Maps">
-                  <i class="fas fa-external-link-alt"></i>
+          @if (pageNodes().length) {
+            <div class="nodes-grid">
+              @for (item of pageNodes(); track item.node.node_id) {
+                <a class="node-card" [routerLink]="['/network/node', item.hex]">
+                  <div class="node-card__top">
+                    <span class="status" [attr.data-status]="item.status">{{ item.statusLabel }}</span>
+                    <span class="node-card__seen">{{ item.seen }}</span>
+                  </div>
+
+                  <div class="node-card__main">
+                    <div class="node-card__titles">
+                      <h3>{{ item.node.long_name || 'Nodo sin nombre' }}</h3>
+                      <div class="node-card__chips">
+                        <span class="chip chip--mono">{{ item.displayId }}</span>
+                        @if (item.node.short_name) {
+                          <span class="chip">{{ item.node.short_name }}</span>
+                        }
+                        @if (item.role) {
+                          <span class="chip chip--accent">{{ item.role }}</span>
+                        }
+                      </div>
+                    </div>
+                    @if (item.image) {
+                      <div class="node-card__img">
+                        <img [src]="item.image" [alt]="item.node.hw_model" width="64" height="64" loading="lazy" decoding="async" appImgFallback />
+                      </div>
+                    }
+                  </div>
+
+                  <dl class="node-card__meta">
+                    <div><dt>Modelo</dt><dd>{{ item.node.hw_model || '—' }}</dd></div>
+                    <div><dt>Canal</dt><dd>{{ item.node.channel || '—' }}</dd></div>
+                    <div>
+                      <dt>Ubicación</dt>
+                      <dd>
+                        @if (item.hasPosition) {
+                          <i class="fa-solid fa-location-dot" aria-hidden="true"></i> Sí
+                        } @else {
+                          No reporta
+                        }
+                      </dd>
+                    </div>
+                  </dl>
+
+                  <span class="node-card__cta">Ver página del nodo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
                 </a>
-              </div>
+              }
             </div>
-          </div>
 
-          <!-- Telemetry -->
-          <div class="detail-section telemetry" [class.full-width]="!selectedNode.last_lat" *ngIf="nodeTelemetry.length > 0">
-            <h3><i class="fas fa-chart-line"></i> Telemetría</h3>
-            <div class="telemetry-grid">
-              <div class="telemetry-item" *ngFor="let tel of nodeTelemetry.slice(0, 4)">
-                <span class="time">{{ formatDate(tel.timestamp) }}</span>
-                <pre class="payload-preview">{{ tel.payload.substring(0, 100) }}...</pre>
-              </div>
+            @if (totalPages() > 1) {
+              <nav class="pagination" aria-label="Paginación de nodos">
+                <button type="button" class="btn btn-secondary btn--sm" (click)="goToPage(page() - 1)" [disabled]="page() === 1">
+                  <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Anterior
+                </button>
+                <span class="pagination__info">Página {{ page() }} de {{ totalPages() }}</span>
+                <button type="button" class="btn btn-secondary btn--sm" (click)="goToPage(page() + 1)" [disabled]="page() === totalPages()">
+                  Siguiente <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </button>
+              </nav>
+            }
+          } @else {
+            <div class="empty-state">
+              <i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i>
+              <h3>Ningún nodo coincide con los filtros</h3>
+              <p>Prueba con otro término o amplía el rango de actividad.</p>
+              <button type="button" class="btn btn-secondary" (click)="clearFilters()">Limpiar filtros</button>
             </div>
-          </div>
+          }
+        }
+      }
 
-          <div class="detail-section messages full-width">
-            <h3><i class="fas fa-envelope"></i> Historial de Mensajes</h3>
-            <div class="loading-spinner mini" *ngIf="loadingDetails">
-              <div class="spinner"></div>
-            </div>
-            <div class="node-messages" *ngIf="!loadingDetails">
-              <div class="mini-message-card" *ngFor="let msg of nodePackets">
-                <div class="msg-header">
-                  <span class="time">{{ formatDate(msg.timestamp) }}</span>
-                  <span class="topic">#{{ msg.topic }}</span>
-                </div>
-                <p class="msg-text">{{ msg.text }}</p>
+      @case ('mensajes') {
+        @if (loadingPackets()) {
+          <div class="messages-list" aria-hidden="true">
+            @for (s of skeletons.slice(0, 5); track s) {
+              <div class="message-card">
+                <span class="skeleton" style="width: 35%; height: 14px"></span>
+                <span class="skeleton" style="width: 90%; height: 18px; margin-top: 12px"></span>
               </div>
-              <div class="no-messages" *ngIf="nodePackets.length === 0">
-                <p>No se encontraron mensajes recientes.</p>
-              </div>
-            </div>
+            }
           </div>
-        </div>
-      </div>
-    </div>
+          <p class="visually-hidden" role="status">Cargando mensajes…</p>
+        } @else if (packetsError()) {
+          <div class="empty-state">
+            <i class="fa-solid fa-plug-circle-xmark" aria-hidden="true"></i>
+            <h3>No pudimos cargar los mensajes</h3>
+            <button type="button" class="btn btn-primary" (click)="retryPackets()">Reintentar</button>
+          </div>
+        } @else {
+          <p class="result-count" role="status">Mensajes públicos recientes del canal · página {{ pageMessages() }}</p>
+          @if (filteredPackets().length) {
+            <ul class="messages-list">
+              @for (packet of filteredPackets(); track packet.id) {
+                <li class="message-card">
+                  <div class="message-card__head">
+                    <a class="message-card__sender" [routerLink]="['/network/node', packet.senderHex]">
+                      {{ packet.from_long_name || 'Nodo desconocido' }}
+                    </a>
+                    <time class="message-card__time" [attr.datetime]="packet.timestamp?.toISOString()">
+                      {{ packet.when }}
+                    </time>
+                  </div>
+                  <p class="message-card__text">{{ packet.text }}</p>
+                  <div class="message-card__foot">
+                    <span class="chip">#{{ packet.topic }}</span>
+                    <span class="chip">{{ packet.channel }}</span>
+                  </div>
+                </li>
+              }
+            </ul>
+          } @else {
+            <div class="empty-state">
+              <i class="fa-regular fa-comments" aria-hidden="true"></i>
+              <h3>Sin mensajes que coincidan</h3>
+            </div>
+          }
+
+          @if (!query()) {
+            <nav class="pagination" aria-label="Paginación de mensajes">
+              <button type="button" class="btn btn-secondary btn--sm" (click)="changeMessagesPage(-1)" [disabled]="pageMessages() === 1">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Más recientes
+              </button>
+              <span class="pagination__info">Página {{ pageMessages() }}</span>
+              <button type="button" class="btn btn-secondary btn--sm" (click)="changeMessagesPage(1)" [disabled]="packets().length < messagesPerPage">
+                Anteriores <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </button>
+            </nav>
+          }
+        }
+      }
+
+      @case ('mapa') {
+        @if (loadingNodes()) {
+          <div class="map-placeholder skeleton" aria-hidden="true"></div>
+          <p class="visually-hidden" role="status">Cargando mapa…</p>
+        } @else {
+          <p class="result-count" role="status">
+            {{ mappableCount().toLocaleString('es-MX') }} nodos con ubicación
+            @if (hasFilters()) { (con los filtros aplicados) }
+          </p>
+          <app-mesh-map [nodes]="filteredNodes()" [fitKey]="filterKey()" [height]="620" />
+        }
+      }
+    }
   </div>
 </div>

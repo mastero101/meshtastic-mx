@@ -1,106 +1,87 @@
 <div class="home">
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container">
-      <div class="hero-content">
+  <!-- Hero -->
+  <section class="hero page-hero">
+    <div class="container hero__grid">
+      <div class="hero__content">
+        <span class="eyebrow">Conectando comunidades a través de redes mesh descentralizadas</span>
         <h1>Bienvenido a Meshtastic México</h1>
-        <p class="hero-subtitle">Conectando comunidades a través de redes mesh descentralizadas</p>
-        <p class="hero-description">
-          Somos una comunidad dedicada a promover y desarrollar la tecnología Meshtastic en México, 
+        <p class="page-hero__subtitle">
+          Somos una comunidad dedicada a promover y desarrollar la tecnología Meshtastic en México,
           creando redes de comunicación independientes y resilientes.
         </p>
-        <div class="hero-buttons">
-          <a routerLink="/about" class="btn btn-primary">Conoce más</a>
-          <a routerLink="/community" class="btn btn-secondary">Únete a la comunidad</a>
-          <a routerLink="/guides" class="btn btn-success btn-mexico">Comienza Aquí</a>
+        <div class="hero__actions">
+          <a routerLink="/guides" class="btn btn-light">
+            <i class="fa-solid fa-rocket" aria-hidden="true"></i> Comienza aquí
+          </a>
+          <a routerLink="/community" class="btn btn-outline-light">Únete a la comunidad</a>
         </div>
+        <a routerLink="/about" class="hero__more">Conoce más <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
       </div>
-      <div class="hero-image">
-        <div class="mesh-network-visual">
-          <!-- Placeholder para visualización de red mesh -->
-          <div class="node node-1"></div>
-          <div class="node node-2"></div>
-          <div class="node node-3"></div>
-          <div class="node node-4"></div>
-          <div class="node node-5"></div>
-          <div class="connection connection-1"></div>
-          <div class="connection connection-2"></div>
-          <div class="connection connection-3"></div>
-          <div class="connection connection-4"></div>
-        </div>
+
+      <div class="hero__visual" aria-hidden="true">
+        <svg viewBox="0 0 400 320" class="mesh-visual">
+          @for (link of meshLinks; track $index) {
+            <line class="mesh-visual__link" [attr.x1]="link[0].x" [attr.y1]="link[0].y" [attr.x2]="link[1].x" [attr.y2]="link[1].y"
+                  [style.animation-delay]="($index * 0.35) + 's'" />
+          }
+          @for (node of meshNodes; track $index) {
+            <circle class="mesh-visual__pulse" [attr.cx]="node.x" [attr.cy]="node.y" r="9"
+                    [style.animation-delay]="($index * 0.45) + 's'" />
+            <circle class="mesh-visual__node" [class.mesh-visual__node--you]="node.you" [attr.cx]="node.x" [attr.cy]="node.y"
+                    [attr.r]="node.you ? 9 : 7" />
+          }
+        </svg>
       </div>
     </div>
   </section>
 
-  <!-- Features Section -->
-  <section class="features">
+  <!-- Qué es -->
+  <section class="section">
     <div class="container">
-      <h2>¿Qué es Meshtastic?</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">📡</div>
-          <h3>Comunicación Descentralizada</h3>
-          <p>Redes mesh que funcionan sin dependencia de infraestructura centralizada.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔋</div>
-          <h3>Bajo Consumo</h3>
-          <p>Dispositivos eficientes que pueden funcionar con baterías por largos períodos.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🌐</div>
-          <h3>Alcance Extendido</h3>
-          <p>Comunicación a larga distancia sin necesidad de torres celulares.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔒</div>
-          <h3>Privacidad</h3>
-          <p>Comunicación encriptada y anónima entre dispositivos.</p>
-        </div>
+      <div class="section-header">
+        <h2>¿Qué es Meshtastic?</h2>
+      </div>
+      <div class="card-grid card-grid--4">
+        @for (feature of features; track feature.title) {
+          <article class="card card--interactive feature-card">
+            <span class="icon-tile icon-tile--lg" aria-hidden="true"><i class="fa-solid" [class]="feature.icon"></i></span>
+            <h3>{{ feature.title }}</h3>
+            <p>{{ feature.text }}</p>
+          </article>
+        }
       </div>
     </div>
   </section>
 
-  <!-- Community Section -->
-  <section class="community">
+  <!-- Red en vivo -->
+  <section class="section section--tinted">
     <div class="container">
-      <div class="community-content">
+      <div class="section-header">
         <h2>Nuestra Comunidad</h2>
         <p>
-          Somos desarrolladores, entusiastas de la tecnología, y personas interesadas en 
+          Somos desarrolladores, entusiastas de la tecnología, y personas interesadas en
           crear soluciones de comunicación resilientes para México.
         </p>
-        <div class="community-stats">
-          <div class="stat">
-            <span class="stat-number">50+</span>
-            <span class="stat-label">Miembros</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number">10+</span>
-            <span class="stat-label">Proyectos</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number">5</span>
-            <span class="stat-label">Ciudades</span>
-          </div>
-        </div>
+      </div>
+      <app-network-stats />
+      <div class="text-center mt-4">
         <a routerLink="/community" class="btn btn-primary">Explora la comunidad</a>
       </div>
     </div>
   </section>
 
   <!-- Mapa de Nodos Meshtastic México -->
-  <section class="mapa-nodos">
+  <section class="section mapa-nodos">
     <div class="container">
-      <h2>Mapa de Nodos en México</h2>
-      <p>Visualiza la ubicación de los nodos Meshtastic activos en el país. ¡Únete y forma parte de la red!</p>
+      <div class="section-header">
+        <h2>Mapa de nodos en México</h2>
+        <p>Visualiza la ubicación de los nodos Meshtastic activos en el país. ¡Únete y forma parte de la red!</p>
+      </div>
       <div class="mapa-iframe-wrapper">
-        <iframe 
-          src="https://meshmap.net/#lat=23.6345&lng=-102.5528&z=5" 
-          width="100%" 
-          height="400" 
-          style="border:0; border-radius: 12px; box-shadow: 0 4px 24px #0002;" 
-          allowfullscreen="" 
+        <iframe
+          src="https://meshmap.net/#lat=23.6345&lng=-102.5528&z=5"
+          title="Mapa de nodos Meshtastic en México (meshmap.net)"
+          allowfullscreen=""
           loading="lazy">
         </iframe>
       </div>
@@ -108,25 +89,19 @@
   </section>
 
   <!-- Latest Projects -->
-  <section class="latest-projects">
+  <section class="section section--tinted">
     <div class="container">
-      <h2>Proyectos Recientes</h2>
-      <div class="projects-grid">
-        <div class="project-card">
-          <h3>Red Mesh CDMX</h3>
-          <p>Implementación de red mesh en la Ciudad de México para comunicación de emergencia.</p>
-          <a routerLink="/projects" class="project-link">Ver más →</a>
-        </div>
-        <div class="project-card">
-          <h3>Meshtastic Monterrey</h3>
-          <p>Desarrollo de aplicaciones locales para la comunidad de Nuevo León.</p>
-          <a routerLink="/projects" class="project-link">Ver más →</a>
-        </div>
-        <div class="project-card">
-          <h3>Red Mesh Yucatán</h3>
-          <p>Implementación de red mesh en la Ciudad de Merida para comunicación de emergencia.</p>
-          <a routerLink="/projects" class="project-link">Ver más →</a>
-        </div>
+      <div class="section-header">
+        <h2>Proyectos recientes</h2>
+      </div>
+      <div class="card-grid">
+        @for (project of projects; track project.title) {
+          <article class="card card--interactive card--accent">
+            <h3>{{ project.title }}</h3>
+            <p>{{ project.text }}</p>
+            <a routerLink="/projects" class="link-arrow">Ver más <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          </article>
+        }
       </div>
     </div>
   </section>

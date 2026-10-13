@@ -1,80 +1,77 @@
-<div class="guide-detail glass-card">
-  <span class="guide-badge badge-paso"><span class="badge-icon">🚩</span> Paso a paso</span>
-  <div class="guide-detail-icon animate-bounce">🚀</div>
-  <h2>Primeros pasos: configuración básica y conexión</h2>
-  <div class="guide-divider"><span class="divider-icon">⚡</span></div>
-  <h4 class="guide-detail-subtitle"><em>¡Pon tu nodo en marcha en minutos!</em></h4>
-  <hr />
-  <div class="guide-warning">
-    <span class="warning-icon">⚠️</span>
-    <strong>¡Advertencia!</strong> No conectes el módulo sin tener la antena instalada.<br>
-    <span class="warning-text">Esto puede dañar permanentemente el dispositivo.</span>
-  </div>
-  <div class="steps-container">
-    <div class="step-card">
-      <div class="step-number">1</div>
-      <div class="step-content">
-        <div class="step-header">
-          <span class="step-icon">💻</span>
-          <strong>Flashear Firmware</strong>
-        </div>
-        <p class="step-desc">Instala el sistema operativo de Meshtastic en tu dispositivo usando el flasheador web oficial.</p>
-        <a class="guide-btn btn-sm" href="https://flasher.meshtastic.org/" target="_blank">Abrir Web Flasher</a>
-      </div>
-    </div>
+<article class="guide">
+  <header class="guide__header">
+    <span class="guide__badge"><i class="fa-solid fa-flag" aria-hidden="true"></i> Paso a paso</span>
+    <span class="icon-tile icon-tile--lg guide__icon" aria-hidden="true"><i class="fa-solid fa-rocket"></i></span>
+    <h2>Primeros pasos: configuración básica y conexión</h2>
+    <p class="guide__lead">¡Pon tu nodo en marcha en minutos!</p>
+  </header>
 
-    <div class="step-card">
-      <div class="step-number">2</div>
-      <div class="step-content">
-        <div class="step-header">
-          <span class="step-icon">📲</span>
-          <strong>Instalar App</strong>
-        </div>
-        <p class="step-desc">Descarga la aplicación móvil para configurar y comunicarte con tu nodo.</p>
-        <div class="step-actions">
-          <a class="guide-btn btn-sm" href="https://play.google.com/store/apps/details/Meshtastic?id=com.geeksville.mesh&hl=es_MX" target="_blank">Android</a>
-          <a class="guide-btn btn-sm" href="https://apps.apple.com/in/app/meshtastic/id1586432531" target="_blank" style="background: #1a1a1a;">iOS</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="step-card">
-      <div class="step-number">3</div>
-      <div class="step-content">
-        <div class="step-header">
-          <span class="step-icon">🔗</span>
-          <strong>Vincular Nodo</strong>
-        </div>
-        <p class="step-desc">Enciende el Bluetooth de tu móvil y vincula el dispositivo desde la sección de configuración de la app.</p>
-      </div>
-    </div>
-
-    <div class="step-card">
-      <div class="step-number">4</div>
-      <div class="step-content">
-        <div class="step-header">
-          <span class="step-icon">⚙️</span>
-          <strong>Configuración</strong>
-        </div>
-        <p class="step-desc">Ajusta la región (915MHz para México), el nombre de usuario y el nombre de tu nodo.</p>
-      </div>
-    </div>
-
-    <div class="step-card">
-      <div class="step-number">5</div>
-      <div class="step-content">
-        <div class="step-header">
-          <span class="step-icon">✉️</span>
-          <strong>Primer Mensaje</strong>
-        </div>
-        <p class="step-desc">¡Listo! Envía un mensaje al canal "LongFast" para confirmar que todo funciona correctamente.</p>
-      </div>
+  <div class="guide-alert guide-alert--warning" role="note">
+    <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+    <div>
+      <strong>¡Advertencia!</strong> No conectes el módulo sin tener la antena instalada.
+      <span>Esto puede dañar permanentemente el dispositivo.</span>
     </div>
   </div>
 
-  <div class="guide-detail-cta pulse">
+  <ol class="steps">
+    <li class="step">
+      <span class="step__number" aria-hidden="true">1</span>
+      <div class="step__content">
+        <h3><i class="fa-solid fa-microchip" aria-hidden="true"></i> Flashear firmware</h3>
+        <p>Instala el sistema operativo de Meshtastic en tu dispositivo usando el flasheador web oficial.</p>
+        <div class="step__actions">
+          <a class="btn btn-primary btn--sm" href="https://flasher.meshtastic.org/" target="_blank" rel="noopener">Abrir Web Flasher</a>
+        </div>
+      </div>
+    </li>
+
+    <li class="step">
+      <span class="step__number" aria-hidden="true">2</span>
+      <div class="step__content">
+        <h3><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i> Instalar app</h3>
+        <p>Descarga la aplicación móvil para configurar y comunicarte con tu nodo.</p>
+        <div class="step__actions">
+          <a class="btn btn-primary btn--sm" href="https://play.google.com/store/apps/details/Meshtastic?id=com.geeksville.mesh&hl=es_MX" target="_blank" rel="noopener">
+            <i class="fa-brands fa-android" aria-hidden="true"></i> Android
+          </a>
+          <a class="btn btn-secondary btn--sm" href="https://apps.apple.com/in/app/meshtastic/id1586432531" target="_blank" rel="noopener">
+            <i class="fa-brands fa-apple" aria-hidden="true"></i> iOS
+          </a>
+        </div>
+      </div>
+    </li>
+
+    <li class="step">
+      <span class="step__number" aria-hidden="true">3</span>
+      <div class="step__content">
+        <h3><i class="fa-brands fa-bluetooth" aria-hidden="true"></i> Vincular nodo</h3>
+        <p>Enciende el Bluetooth de tu móvil y vincula el dispositivo desde la sección de configuración de la app.</p>
+      </div>
+    </li>
+
+    <li class="step">
+      <span class="step__number" aria-hidden="true">4</span>
+      <div class="step__content">
+        <h3><i class="fa-solid fa-sliders" aria-hidden="true"></i> Configuración</h3>
+        <p>Ajusta la región (915MHz para México), el nombre de usuario y el nombre de tu nodo.</p>
+      </div>
+    </li>
+
+    <li class="step">
+      <span class="step__number" aria-hidden="true">5</span>
+      <div class="step__content">
+        <h3><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Primer mensaje</h3>
+        <p>¡Listo! Envía un mensaje al canal "LongFast" para confirmar que todo funciona correctamente.</p>
+      </div>
+    </li>
+  </ol>
+
+  <footer class="guide__cta">
     <span>¿Necesitas una guía más detallada?</span>
-    <p style="font-size: 0.9rem; margin-bottom: 1rem; color: #666;">Visita la documentación oficial para resolver dudas técnicas.</p>
-    <a class="guide-btn" href="https://meshtastic.org/docs/getting-started/" target="_blank">Documentación Oficial</a>
-  </div>
-</div>
+    <p>Visita la documentación oficial para resolver dudas técnicas.</p>
+    <a class="btn btn-primary" href="https://meshtastic.org/docs/getting-started/" target="_blank" rel="noopener">
+      Documentación oficial <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+    </a>
+  </footer>
+</article>

@@ -18,6 +18,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/network/network.component').then(m => m.NetworkComponent)
   },
   {
+    // Página propia de cada nodo: /network/node/9ee6b708 (ID hexadecimal sin "!")
+    path: 'network/node/:id',
+    loadComponent: () => import('./pages/node-detail/node-detail.component').then(m => m.NodeDetailComponent)
+  },
+  {
     path: 'projects',
     loadComponent: () => import('./pages/projects/projects.component').then(m => m.ProjectsComponent)
   },

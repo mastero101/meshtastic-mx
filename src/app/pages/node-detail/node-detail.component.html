@@ -1,0 +1,259 @@
+<div class="node-page">
+  <div class="container">
+    <div class="node-page__nav">
+      <button type="button" class="btn btn-secondary btn--sm" (click)="goBack()">
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Volver a la red
+      </button>
+      @if (view()) {
+        <button type="button" class="btn btn-secondary btn--sm" (click)="copyLink()">
+          <i class="fa-solid" [class.fa-link]="!copied()" [class.fa-check]="copied()" aria-hidden="true"></i>
+          {{ copied() ? '¡Enlace copiado!' : 'Copiar enlace' }}
+        </button>
+      }
+    </div>
+
+    @if (loading()) {
+      <div class="node-header card" aria-hidden="true">
+        <span class="skeleton" style="width: 96px; height: 96px; border-radius: 16px"></span>
+        <div class="node-header__text">
+          <span class="skeleton" style="width: 50%; height: 30px"></span>
+          <span class="skeleton" style="width: 30%; height: 16px; margin-top: 12px"></span>
+        </div>
+      </div>
+      <div class="metrics" aria-hidden="true">
+        @for (s of [1, 2, 3, 4]; track s) {
+          <span class="skeleton" style="height: 96px; border-radius: 20px"></span>
+        }
+      </div>
+      <p class="visually-hidden" role="status">Cargando nodo…</p>
+    } @else if (failed()) {
+      <div class="empty-state card">
+        <i class="fa-solid fa-plug-circle-xmark" aria-hidden="true"></i>
+        <h3>No pudimos cargar este nodo</h3>
+        <p>La API de MeshView no respondió.</p>
+        <button type="button" class="btn btn-primary" (click)="load()">Reintentar</button>
+      </div>
+    } @else if (notFound() || !view()) {
+      <div class="empty-state card">
+        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+        <h3>Nodo no encontrado</h3>
+        <p>No hay ningún nodo con el ID <code>!{{ hexParam() }}</code> en la red de México.</p>
+        <a routerLink="/network" class="btn btn-primary">Ir a la red</a>
+      </div>
+    } @else {
+      @let v = view()!;
+
+      <!-- Encabezado -->
+      <header class="node-header card">
+        <div class="node-header__img">
+          @if (v.image) {
+            <img [src]="v.image" [alt]="v.node.hw_model" width="96" height="96" decoding="async" appImgFallback />
+          } @else {
+            <i class="fa-solid fa-microchip" aria-hidden="true"></i>
+          }
+        </div>
+        <div class="node-header__text">
+          <div class="node-header__status">
+            <span class="status" [attr.data-status]="v.status">{{ v.statusLabel }}</span>
+            <span class="node-header__seen" [attr.title]="v.lastSeenExact">· visto {{ v.lastSeen }}</span>
+          </div>
+          <h1>{{ v.node.long_name || 'Nodo sin nombre' }}</h1>
+          <div class="node-header__chips">
+            <span class="chip chip--mono">{{ v.displayId }}</span>
+            <span class="chip chip--mono">#{{ v.node.node_id }}</span>
+            @if (v.node.short_name) {
+              <span class="chip">{{ v.node.short_name }}</span>
+            }
+            <span class="chip chip--accent">{{ v.role }}</span>
+            @if (v.node.is_mqtt_gateway) {
+              <span class="chip chip--accent"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> Gateway MQTT</span>
+            }
+          </div>
+        </div>
+      </header>
+
+      <!-- Métricas actuales -->
+      @if (telemetry().length) {
+        <section class="metrics" aria-label="Últimas métricas">
+          @if (battery(); as b) {
+            <div class="metric" [attr.data-tone]="b.tone">
+              <span class="metric__label"><i class="fa-solid" [class]="b.icon" aria-hidden="true"></i> Batería</span>
+              <span class="metric__value">{{ b.label }}</span>
+              @if (b.external) {
+                <span class="metric__hint">Alimentación externa</span>
+              } @else {
+                <span class="metric__bar"><span [style.width.%]="b.percent"></span></span>
+              }
+            </div>
+          }
+          @if (latest().voltage !== undefined) {
+            <div class="metric">
+              <span class="metric__label"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Voltaje</span>
+              <span class="metric__value">{{ latest().voltage!.toFixed(2) }} V</span>
+            </div>
+          }
+          @if (latest().channel_utilization !== undefined) {
+            <div class="metric">
+              <span class="metric__label"><i class="fa-solid fa-wave-square" aria-hidden="true"></i> Uso del canal</span>
+              <span class="metric__value">{{ latest().channel_utilization!.toFixed(1) }}%</span>
+            </div>
+          }
+          @if (latest().air_util_tx !== undefined) {
+            <div class="metric">
+              <span class="metric__label"><i class="fa-solid fa-tower-broadcast" aria-hidden="true"></i> Tiempo al aire</span>
+              <span class="metric__value">{{ latest().air_util_tx!.toFixed(2) }}%</span>
+            </div>
+          }
+          @if (latest().uptime_seconds !== undefined) {
+            <div class="metric">
+              <span class="metric__label"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> Encendido</span>
+              <span class="metric__value">{{ uptime() }}</span>
+            </div>
+          }
+          @if (latest().temperature !== undefined) {
+            <div class="metric">
+              <span class="metric__label"><i class="fa-solid fa-temperature-half" aria-hidden="true"></i> Temperatura</span>
+              <span class="metric__value">{{ latest().temperature!.toFixed(1) }} °C</span>
+            </div>
+          }
+          @if (latest().relative_humidity !== undefined) {
+            <div class="metric">
+              <span class="metric__label"><i class="fa-solid fa-droplet" aria-hidden="true"></i> Humedad</span>
+              <span class="metric__value">{{ latest().relative_humidity!.toFixed(0) }}%</span>
+            </div>
+          }
+        </section>
+      }
+
+      <div class="node-layout">
+        <!-- Telemetría -->
+        <section class="panel node-layout__wide" aria-labelledby="telemetry-title">
+          <div class="panel__head">
+            <h2 id="telemetry-title"><i class="fa-solid fa-chart-line" aria-hidden="true"></i> Telemetría</h2>
+            @if (telemetryRange()) {
+              <span class="panel__meta">{{ telemetry().length }} lecturas · {{ telemetryRange() }}</span>
+            }
+          </div>
+
+          @if (charts().length) {
+            <div class="charts">
+              @for (chart of charts(); track chart.key) {
+                <app-telemetry-chart
+                  [title]="chart.title"
+                  [points]="chart.points"
+                  [unit]="chart.unit"
+                  [decimals]="chart.decimals"
+                  [min]="chart.min"
+                  [max]="chart.max"
+                />
+              }
+            </div>
+            @if (mostlyExternalPower()) {
+              <p class="panel__note"><i class="fa-solid fa-plug" aria-hidden="true"></i> Este nodo reporta alimentación externa (nivel 101) en la mayoría de sus lecturas, por eso no se grafica la batería.</p>
+            }
+
+            <details class="readings">
+              <summary>Ver lecturas en tabla</summary>
+              <div class="readings__scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Hora</th>
+                      <th scope="col">Batería</th>
+                      <th scope="col">Voltaje</th>
+                      <th scope="col">Canal</th>
+                      <th scope="col">Aire TX</th>
+                      <th scope="col">Temp.</th>
+                      <th scope="col">Humedad</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of telemetryRows(); track $index) {
+                      <tr>
+                        <td>{{ row.time }}</td>
+                        <td>{{ row.battery }}</td>
+                        <td>{{ row.voltage }}</td>
+                        <td>{{ row.channel }}</td>
+                        <td>{{ row.air }}</td>
+                        <td>{{ row.temperature }}</td>
+                        <td>{{ row.humidity }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          } @else {
+            <div class="empty-state">
+              <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+              <h3>Sin telemetría reciente</h3>
+              <p>Este nodo no ha compartido métricas de dispositivo o ambiente por MQTT.</p>
+            </div>
+          }
+        </section>
+
+        <!-- Información -->
+        <section class="panel" aria-labelledby="info-title">
+          <div class="panel__head">
+            <h2 id="info-title"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Información</h2>
+          </div>
+          <dl class="info-list">
+            <div><dt>Hardware</dt><dd>{{ v.node.hw_model || '—' }}</dd></div>
+            <div><dt>Rol</dt><dd>{{ v.role }}</dd></div>
+            <div><dt>Firmware</dt><dd>{{ v.node.firmware || 'No reportado' }}</dd></div>
+            <div><dt>Canal</dt><dd>{{ v.node.channel || '—' }}</dd></div>
+            <div><dt>Última actividad</dt><dd>{{ v.lastSeenExact }}</dd></div>
+            <div><dt>Primera vez visto</dt><dd>{{ v.firstSeen }}</dd></div>
+          </dl>
+        </section>
+
+        <!-- Ubicación -->
+        <section class="panel" aria-labelledby="location-title">
+          <div class="panel__head">
+            <h2 id="location-title"><i class="fa-solid fa-location-dot" aria-hidden="true"></i> Ubicación</h2>
+          </div>
+          @if (v.coords; as c) {
+            <app-mesh-map [nodes]="[v.node]" [single]="true" [height]="260" />
+            <p class="coords">{{ c.lat.toFixed(5) }}, {{ c.lng.toFixed(5) }}</p>
+            <div class="panel__actions">
+              <a class="btn btn-secondary btn--sm" [href]="v.googleMaps" target="_blank" rel="noopener">
+                Google Maps <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+              </a>
+              <a class="btn btn-secondary btn--sm" [href]="v.osm" target="_blank" rel="noopener">
+                OpenStreetMap <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+              </a>
+            </div>
+          } @else {
+            <div class="empty-state">
+              <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i>
+              <h3>Sin posición</h3>
+              <p>Este nodo no comparte su ubicación.</p>
+            </div>
+          }
+        </section>
+
+        <!-- Mensajes -->
+        <section class="panel node-layout__wide" aria-labelledby="messages-title">
+          <div class="panel__head">
+            <h2 id="messages-title"><i class="fa-solid fa-comments" aria-hidden="true"></i> Mensajes recientes</h2>
+          </div>
+          @if (messageRows().length) {
+            <ul class="node-messages">
+              @for (msg of messageRows(); track msg.id) {
+                <li>
+                  <time [attr.datetime]="msg.timestamp?.toISOString()">{{ msg.when }}</time>
+                  <p>{{ msg.text }}</p>
+                </li>
+              }
+            </ul>
+          } @else {
+            <div class="empty-state">
+              <i class="fa-regular fa-comments" aria-hidden="true"></i>
+              <h3>Sin mensajes públicos recientes</h3>
+            </div>
+          }
+        </section>
+      </div>
+    }
+  </div>
+</div>

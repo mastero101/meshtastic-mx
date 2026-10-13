@@ -4,7 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-mqtt',
   imports: [],
   templateUrl: './mqtt.component.html',
-  styleUrl: './mqtt.component.scss'
 })
 export class MqttComponent {
 
